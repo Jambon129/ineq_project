@@ -4,15 +4,17 @@ library(ggplot2)
 library(survey)
 library(convey)
 
+#establish data connection (do NOT push with password inside!!!)
+pg <- src_postgres(dbname="datacube", host="ineq.wu.ac.at", user='lvineq',password = '', options="-c search_path=silc")
 
+###FETCH ALL VARIABLES IN ORDER TO BUILD PROPER INCOME CONCEPTS LATER ON
 
-#PRE-TAX FACTOR INCOME
-
-#personal income data
+##PERSONAL DATA
+#available from pp
 silc.p <- tbl(pg, 'pp') %>% filter(pb010 %in% c(2004:2017) & pb020=='PL') %>%
-  select(pb010, pb030, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g) %>% collect(n=Inf)
+  select(pb010, pb030, pb040, pb140, pb150,  px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g) %>% collect(n=Inf)
 
-#fetch information about cars for 2005 to 2006 (0224 not available) from py020g but rename it to py021g fro later matching purposes:
+#fetch information about cars for 2005 to 2006 (2004 not available) from py020g but rename it to py021g fro later matching purposes:
 #py021g04 <- tbl(pg, 'c04p') %>% filter(pb020=='PL') %>% select(pb030, px030, pb010, py020g) %>% collect(n=Inf)
 #py021g04 <- rename(py021g04, 'py021g'= py020g)
 
@@ -30,19 +32,38 @@ py021g11 <- tbl(pg, 'c11p') %>% filter(pb020=='PL') %>% select(pb030, px030, pb0
 py021g12 <- tbl(pg, 'c12p') %>% filter(pb020=='PL') %>% select(pb030, px030, pb010, py021g) %>% collect(n=Inf)
 py021g13 <- tbl(pg, 'c13p') %>% filter(pb020=='PL') %>% select(pb030, px030, pb010, py021g) %>% collect(n=Inf)
 
-# years after 2013 are still missing
-
-#stack all 'py021gXX'-object to one single vector
-
-py021g <- bind_rows(py021g04, py021g05, py021g06, py021g07, py021g08, py021g09, py021g10, py021g11, py021g12, py021g13)
+#stack all 'py021gXX'-objects to one single vector
+py021g <- bind_rows(py021g05, py021g06, py021g07, py021g08, py021g09, py021g10, py021g11, py021g12, py021g13)
 
 #matching the data with main dataset silc.p according to year, household ID and personal ID
-
 silc.p <- left_join(silc.p, py021g, by=c('pb010','pb030', 'px030'))
 
-#household data:
+#for the years 2014-2017, data has to be fetched one-by-one from the 'cXXp'-sets
+silc.p_14 <- tbl(pg, 'c14p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
+silc.p_15 <- tbl(pg, 'c15p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
+silc.p_16 <- tbl(pg, 'c16p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
+silc.p_17 <- tbl(pg, 'c17p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
 
-silc.h <- tbl(pg, 'hh') %>% filter(hb010 %in% c(2004:2017) & hb020 %in% c('PL')) %>% select(hb010, hy110g, hy040g, hy090g, hy50g, hy60g, hy70g, hy080g, hy120g, hy130g, hy140g, hb030, hy020, hx050)
+#we stack those objects again to one single frame, and attach it to the main set from "below" (newest observations)
+silc.p_14to17 <- bind_rows(silc.p_14, silc.p_15, silc.p_16, silc.p_17)
+
+silc.p <- bind_rows(silc.p, silc.p_14to17)
+
+##HOUSEHOLD DATA
+
+#Available from hh:
+silc.h <- tbl(pg, 'hh') %>% filter(hb010 %in% c(2004:2017) & hb020 %in% c('PL')) %>% select(hb010, hy110g, hy040g, hy090g, hy050g, hy060g, hy070g, hy080g, hy120g, hy130g, hy140g, hb030, hy020, hx050, hx040) %>% collect(n=Inf)
+
+#for the years 2014-2017, data has to be fetched one-by-one from the 'cXXp'-sets
+silc.h_14 <- tbl(pg, 'c14h') %>% filter(hb020=='PL') %>% select(hb010, hy110g, hy040g, hy090g, hy050g, hy060g, hy070g, hy080g, hy120g, hy130g, hy140g, hb030, hy020, hx050, hx040) %>% collect(n=Inf)
+silc.h_15 <- tbl(pg, 'c15h') %>% filter(hb020=='PL') %>% select(hb010, hy110g, hy040g, hy090g, hy050g, hy060g, hy070g, hy080g, hy120g, hy130g, hy140g, hb030, hy020, hx050, hx040) %>% collect(n=Inf)
+silc.h_16 <- tbl(pg, 'c16h') %>% filter(hb020=='PL') %>% select(hb010, hy110g, hy040g, hy090g, hy050g, hy060g, hy070g, hy080g, hy120g, hy130g, hy140g, hb030, hy020, hx050, hx040) %>% collect(n=Inf)
+silc.h_17 <- tbl(pg, 'c17h') %>% filter(hb020=='PL') %>% select(hb010, hy110g, hy040g, hy090g, hy050g, hy060g, hy070g, hy080g, hy120g, hy130g, hy140g, hb030, hy020, hx050, hx040) %>% collect(n=Inf)
+
+silc.h_14to17 <- bind_rows(silc.h_14, silc.h_15, silc.h_16, silc.h_17)
+
+silc.h <- bind_rows(silc.h, silc.h_14to17)
+
 
 
 
