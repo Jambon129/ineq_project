@@ -11,8 +11,7 @@ pg <- src_postgres(dbname="datacube", host="ineq.wu.ac.at", user='lvineq',passwo
 
 ##PERSONAL DATA
 #available from pp
-silc.p <- tbl(pg, 'pp') %>% filter(pb010 %in% c(2004:2017) & pb020=='PL') %>%
-  select(pb010, pb030, pb040, pb140, pb150,  px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g) %>% collect(n=Inf)
+silc.p <- tbl(pg, 'pp') %>% filter(pb010 %in% c(2004:2017) & pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, pl060, pl100, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g) %>% collect(n=Inf)
 
 #fetch information about cars for 2005 to 2006 (2004 not available) from py020g but rename it to py021g fro later matching purposes:
 #py021g04 <- tbl(pg, 'c04p') %>% filter(pb020=='PL') %>% select(pb030, px030, pb010, py020g) %>% collect(n=Inf)
@@ -39,15 +38,23 @@ py021g <- bind_rows(py021g05, py021g06, py021g07, py021g08, py021g09, py021g10, 
 silc.p <- left_join(silc.p, py021g, by=c('pb010','pb030', 'px030'))
 
 #for the years 2014-2017, data has to be fetched one-by-one from the 'cXXp'-sets
-silc.p_14 <- tbl(pg, 'c14p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
-silc.p_15 <- tbl(pg, 'c15p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
-silc.p_16 <- tbl(pg, 'c16p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
-silc.p_17 <- tbl(pg, 'c17p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
+silc.p_14 <- tbl(pg, 'c14p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, pl060, pl100, pl073, pl074, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g, ) %>% collect(n=Inf)
+silc.p_15 <- tbl(pg, 'c15p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, pl060, pl100, pl073, pl074, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
+silc.p_16 <- tbl(pg, 'c16p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, pl060, pl100, pl073, pl074, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
+silc.p_17 <- tbl(pg, 'c17p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, pl060, pl100, pl073, pl074, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
 
 #we stack those objects again to one single frame, and attach it to the main set from "below" (newest observations)
 silc.p_14to17 <- bind_rows(silc.p_14, silc.p_15, silc.p_16, silc.p_17)
 
 silc.p <- bind_rows(silc.p, silc.p_14to17)
+
+# replace NAs in working hours by 0
+#silc.p$pl060[is.na(silc.dp$pl060)] <- 0
+#silc.p$pl100[is.na(silc.dp$pl100)] <- 0
+
+#create total working hours
+#silc.p <- silc.p %>% mutate(totalhours = pl060+pl100)
+
 
 ##HOUSEHOLD DATA
 
@@ -64,8 +71,13 @@ silc.h_14to17 <- bind_rows(silc.h_14, silc.h_15, silc.h_16, silc.h_17)
 
 silc.h <- bind_rows(silc.h, silc.h_14to17)
 
+#for every household, give us now the summed up income of all household members
+silc.p_sum <- silc.p %>% group_by(pb010, px030) %>% summarise_at(vars(py010g, py021g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g), funs(sum)) 
 
+#now we join this with silc.h
+silc.h <- left_join(silc.h, silc.p_sum, by=c('hb010'='pb010', 'hb030'='px030'))
 
+#inside silc.h there is now all the information we need in order to calculate our aggregates
 
 
 
