@@ -68,6 +68,9 @@ silc.h <- bind_rows(silc.h, silc.h_14to17)
 
 
 
+
+
+
 # join register & data
 silc.dp <- right_join(silc.d, silc.p, by=c('db020'='pb020', 'db030'='px030'))
 
