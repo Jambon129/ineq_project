@@ -77,9 +77,20 @@ silc.p_sum <- silc.p %>% group_by(pb010, px030) %>% summarise_at(vars(py010g, py
 #now we join this with silc.h
 silc.h <- left_join(silc.h, silc.p_sum, by=c('hb010'='pb010', 'hb030'='px030'))
 
-#inside silc.h there is now all the information we need in order to calculate our aggregates
+#inside silc.h there is now all the information we need in order to calculate our aggregates. Remember that with hx040 we have the number of all household members that have an entry in file r
 
+###NOW BUILD THE INCOME AGGREGATES
 
+##P1 (EUROSTAT)
+
+#Pre-tax factor income
+silc.h <- silc.h %>% mutate(pretax_sum=py010g+py021g+py050g+hy110g+hy040g+hy090g+py080g)
+silc.h <- silc.h %>% mutate(pretax=pretax_sum/(hx050))
+
+#pretax national income
+silc.h <- 
+
+  #after that we have to find a way to appoint these avereages to the people
 
 
 
