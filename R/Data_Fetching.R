@@ -114,6 +114,12 @@ silc.h <- silc.h %>% mutate(posttax=posttax_sum/hx050)
 silc.rh <- left_join(silc.r, silc.h, by=c('rb010'='hb010', 'rx030'='hb030'))
 
 #we can take now this table and cut out only the collumns that we need and rename them
+silc.rhp <- left_join(silc.rh, silc.p, by=c('rb010'='pb010','rx030'='px030' ,'rb030'='pb030'))
+
+####hier weitermachen
+
+
+
 
 
 
