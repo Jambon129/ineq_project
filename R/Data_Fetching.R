@@ -77,7 +77,22 @@ silc.p_sum <- silc.p %>% group_by(pb010, px030) %>% summarise_at(vars(py010g, py
 #now we join this with silc.h
 silc.h <- left_join(silc.h, silc.p_sum, by=c('hb010'='pb010', 'hb030'='px030'))
 
-#inside silc.h there is now all the information we need in order to calculate our aggregates. Remember that with hx040 we have the number of all household members that have an entry in file r
+
+## Personal Register Data
+
+#available from rr
+silc.r <- tbl(pg, 'rr') %>% filter(rb010 %in% c(2004:2017) & rb020=='PL') %>% select(rb010, rb030, rb050, rb080, rb090, rx030) %>% collect(n=Inf)
+
+#for the years 2014-2017, data has to be fetched one-by-one from the 'cXXr'-sets
+silc.r_14 <- tbl(pg, 'c14r') %>% filter(rb020=='PL') %>% select(rb010, rb030, rb050, rb080, rb090, rx030) %>% collect(n=Inf)
+silc.r_15 <- tbl(pg, 'c15r') %>% filter(rb020=='PL') %>% select(rb010, rb030, rb050, rb080, rb090, rx030) %>% collect(n=Inf)
+silc.r_16 <- tbl(pg, 'c16r') %>% filter(rb020=='PL') %>% select(rb010, rb030, rb050, rb080, rb090, rx030) %>% collect(n=Inf)
+silc.r_17 <- tbl(pg, 'c17r') %>% filter(rb020=='PL') %>% select(rb010, rb030, rb050, rb080, rb090, rx030) %>% collect(n=Inf)
+
+silc.r_14to17 <- bind_rows(silc.r_14, silc.r_15, silc.r_16, silc.r_17)
+
+silc.r <- bind_rows(silc.r, silc.r_14to17)
+
 
 ###NOW BUILD THE INCOME AGGREGATES
 
@@ -95,7 +110,10 @@ silc.h <- silc.h %>% mutate(pretaxnational=pretaxnational_sum/hx050)
 silc.h <- silc.h %>% mutate(posttax_sum=pretaxnational_sum+py110g+py120g+py130g+py140g+hy050g+hy060g+hy070g+hy080g+hy120g+hy130g+hy140g)
 silc.h <- silc.h %>% mutate(posttax=posttax_sum/hx050)
 
-  #after that we have to find a way to appoint these avereages to the people. Also, download silc.r
+#now we put silc.h and silc-r together in order to appoint the weighted income aggregates to all household members.
+silc.rh <- left_join(silc.r, silc.h, by=c('rb010'='hb010', 'rx030'='hb030'))
+
+#we can take now this table and cut out only the collumns that we need and rename them
 
 
 
