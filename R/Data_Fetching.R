@@ -84,13 +84,18 @@ silc.h <- left_join(silc.h, silc.p_sum, by=c('hb010'='pb010', 'hb030'='px030'))
 ##P1 (EUROSTAT)
 
 #Pre-tax factor income
-silc.h <- silc.h %>% mutate(pretax_sum=py010g+py021g+py050g+hy110g+hy040g+hy090g+py080g)
-silc.h <- silc.h %>% mutate(pretax=pretax_sum/(hx050))
+silc.h <- silc.h %>% mutate(pretaxfacinc_sum=py010g+py021g+py050g+hy110g+hy040g+hy090g+py080g)
+silc.h <- silc.h %>% mutate(pretaxfacinc=pretaxfacinc_sum/(hx050))
 
 #pretax national income
-silc.h <- 
+silc.h <- silc.h %>% mutate(pretaxnational_sum=pretaxfacinc_sum+py090g+py100g)
+silc.h <- silc.h %>% mutate(pretaxnational=pretaxnational_sum/hx050)
 
-  #after that we have to find a way to appoint these avereages to the people
+#post-tax disposable income
+silc.h <- silc.h %>% mutate(posttax_sum=pretaxnational_sum+py110g+py120g+py130g+py140g+hy050g+hy060g+hy070g+hy080g+hy120g+hy130g+hy140g)
+silc.h <- silc.h %>% mutate(posttax=posttax_sum/hx050)
+
+  #after that we have to find a way to appoint these avereages to the people. Also, download silc.r
 
 
 
