@@ -38,10 +38,10 @@ py021g <- bind_rows(py021g05, py021g06, py021g07, py021g08, py021g09, py021g10, 
 silc.p <- left_join(silc.p, py021g, by=c('pb010','pb030', 'px030'))
 
 #for the years 2014-2017, data has to be fetched one-by-one from the 'cXXp'-sets
-silc.p_14 <- tbl(pg, 'c14p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, pl060, pl100, pl073, pl074, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g, ) %>% collect(n=Inf)
-silc.p_15 <- tbl(pg, 'c15p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, pl060, pl100, pl073, pl074, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
-silc.p_16 <- tbl(pg, 'c16p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, pl060, pl100, pl073, pl074, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
-silc.p_17 <- tbl(pg, 'c17p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, pl060, pl100, pl073, pl074, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g) %>% collect(n=Inf)
+silc.p_14 <- tbl(pg, 'c14p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g, pe040, pl150, pl190, pl200) %>% collect(n=Inf)
+silc.p_15 <- tbl(pg, 'c15p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g, pe040, pl150, pl190, pl200) %>% collect(n=Inf)
+silc.p_16 <- tbl(pg, 'c16p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g, pe040, pl150, pl190, pl200) %>% collect(n=Inf)
+silc.p_17 <- tbl(pg, 'c17p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb040, pb140, pb150, px030, py010g, py020g, py050g, py080g, py090g, py100g, py110g, py120g, py130g, py140g, py021g, pe040, pl150, pl190, pl200) %>% collect(n=Inf)
 
 #we stack those objects again to one single frame, and attach it to the main set from "below" (newest observations)
 silc.p_14to17 <- bind_rows(silc.p_14, silc.p_15, silc.p_16, silc.p_17)
@@ -96,7 +96,8 @@ silc.r <- bind_rows(silc.r, silc.r_14to17)
 
 ###NOW BUILD THE INCOME AGGREGATES
 
-##P1 (EUROSTAT)
+# P1 (EUROSTAT) -----------------------------------------------------------
+
 
 #Pre-tax factor income
 silc.h <- silc.h %>% mutate(pretaxfacinc_sum=py010g+py021g+py050g+hy110g+hy040g+hy090g+py080g)
@@ -107,90 +108,147 @@ silc.h <- silc.h %>% mutate(pretaxnational_sum=pretaxfacinc_sum+py090g+py100g)
 silc.h <- silc.h %>% mutate(pretaxnational=pretaxnational_sum/hx050)
 
 #post-tax disposable income
-silc.h <- silc.h %>% mutate(posttax_sum=pretaxnational_sum+py110g+py120g+py130g+py140g+hy050g+hy060g+hy070g+hy080g+hy120g+hy130g+hy140g)
+silc.h <- silc.h %>% mutate(posttax_sum=pretaxnational_sum+py110g+py120g+py130g+py140g+hy050g+hy060g+hy070g+hy080g-hy120g-hy130g-hy140g)
 silc.h <- silc.h %>% mutate(posttax=posttax_sum/hx050)
 
 #now we put silc.h and silc-r together in order to appoint the weighted income aggregates to all household members.
 silc.rh <- left_join(silc.r, silc.h, by=c('rb010'='hb010', 'rx030'='hb030'))
 
 #we can take now this table and cut out only the collumns that we need and rename them
-silc.rhp <- left_join(silc.rh, silc.p, by=c('rb010'='pb010','rx030'='px030' ,'rb030'='pb030'))
+silc.rh <- rename(silc.rh, 'year'=rb010, 'persID'=rb030, 'perswght'=rb050, 'brthyr'=rb080, 'sex'=rb090, 'houseID'=rx030, 'incu16'=hy110g, 'incrental'=hy040g, 'returninv'=hy090g, 'childallow'=hy050g, 'socex'=hy060g, 'houseallow'=hy070g, 'interhouse_rec'=hy080g, 'wealthtax'=hy120g, 'interhouse_paid'=hy130g, 'inctax'=hy140g, 'houseinc'=hy020, 'eqhousesize'=hx050, 'housesize'=hx040, 'empcashinc'=py010g, 'compcar'=py021g, 'selfcashinc'=py050g, 'privatepens'=py080g, 'unempben'=py090g, 'oldageben'=py100g, 'survivorben'=py110g, 'sicknessben'=py120g, 'disabilben'=py130g, 'educationben'=py140g)
 
-####hier weitermachen
-
-
-
-
-
-
-# join register & data
-silc.dp <- right_join(silc.d, silc.p, by=c('db020'='pb020', 'db030'='px030'))
-
-# replace NAs in working hours by 0
-silc.dp$pl060[is.na(silc.dp$pl060)] <- 0
-silc.dp$pl100[is.na(silc.dp$pl100)] <- 0
-
-silc.dp <- silc.dp %>% mutate(totalhours = pl060+pl100)
-
-#anderer Weg mit dplyr-Logik: 
-#silc.dp <- silc.dp %>% mutate(totalhours = coalesce(pl060, 0L) + coalesce(pl100, 0L))
-
-# calculate hourly wage
-silc.dp <- silc.dp %>% mutate(hwages = py010g / ((pl060+pl100)*52/12*pmin(12,pl073+pl074)) )
-
-#NaN weil divisionen durch Null, daher:
-silc.dp <- silc.dp %>% filter(py010g>0 & pl060>0 & (pl073+pl074)>0)
-
-# filter only observations with income and working time
-silc.dp <- silc.dp %>% filter(py010g>0 & pl060>0 & (pl073+pl074)>0)
-
-summary(silc.dp)
-
-# generate age and recode gender to factor variable
-silc.dp <- silc.dp %>% mutate( age = 2013-pb140,
-                               gender = factor(pb150,labels = c('Male','Female')),
-                               edu = factor(pe040, levels=c(0:5),  labels = c("pre-primary","primary","lower secondary","upper secondary","post secondary","tertiary")))
+#generate age and recode gender to factor variable
+silc.rh <- silc.rh %>% mutate( age = year-brthyr,
+                               gender = factor(sex,labels = c('Male','Female')))
 class(silc.dp$gender)
 
-## some regression specifications
-ols1 <- lm(hwages ~ age + gender, data=silc.dp)
-summary(ols1)
+save(silc.rh, file='./data/P1.rda',compress = 'xz')
 
-# log(y): distribution of residuals look more like normal distr.
-ols2 <- lm(log(hwages) ~ age + gender, data=silc.dp)
-summary(ols2)
-
-# include age^2: non-linear relationship between inc and age
-ols3 <- lm(log(hwages) ~ I(age-min(age)) + I(age^2) + gender, data=silc.dp)
-summary(ols3)
-
-# factor: includes dummies for qualitative variables
-ols4 <- lm(log(hwages) ~ age + I(age^2) + gender + factor(pe040) + edu, data=silc.dp)
-summary(ols4)
+#silc.rhp <- left_join(silc.rh, silc.p, by=c('rb010'='pb010','rx030'='px030' ,'rb030'='pb030'))
+#cancelled because the p-file has less observation than the r-file
 
 
-# svy design
+
+# P1 measures -------------------------------------------------------------
+# 
+#convert NA to zero
+silc.rh[is.na(silc.rh)] <- 0
+
 library(survey)
 library(convey)
-silc.dp <- silc.dp %>% mutate(id_h=paste0(db020,db030))
-silc.p.svy <- svydesign(ids=~id_h,
-                        strata=~db040,
-                        weights=~db090,
-                        data=silc.dp) %>% convey_prep()
 
-# weighted ols
-svyols <- svyglm(log(hwages) ~ age + I(age^2) + gender + factor(pe040) , silc.p.svy)
+silc.rh <- silc.rh %>% mutate(id_h=paste0(persID))
 
-# logit model: family=binomial()!!
-svylogit <- svyglm(I(hwages>10) ~ age + I(age^2) + gender + factor(pe040) , silc.p.svy, family=binomial())
+##pb040=rb050
+##perswght= rb050
+##id= rb030
 
-# marginal effects: caveat! weights currently ignored
-library(margins)
-margins(svylogit)
+silc.rh.svy <- svydesign(ids=~id_h,
+                         weights=~perswght,
+                         data=silc.rh) %>% convey_prep()
 
-summary(svyols)
+#mittelwert
+svyby(~posttax, by=~year, design=silc.ph_adults, FUN = svymean)
 
 
-# scatterplot with ggplot
-library(ggplot2)
-silc.dp %>% ggplot(aes(x=age, y=log(hwages))) + geom_point(aes(color=gender), aplha=0.25) + scale_color_brewer('Geschlecht', palette = 'Set1') + facet_wrap(~edu)#+ geom_smooth(method='lm')
+#median & top 10
+#watch out: svyby tries to compute s.e but svyquantile won't produce them, need to tell either keep.var = FALSE or ci = TRUE 
+# ci = TRUE will yield warnings regarding vcv, still same results
+# 
+
+#quantiles top 10:
+svyby(~posttax, by=~year, design=silc.rh.svy, FUN = svyquantile, c(0.9), ci = TRUE)
+
+##median
+svyby(~posttax, by=~year, design=silc.rh.svy, FUN = svyquantile, c(0.5), ci = TRUE)
+
+#80 to 20
+svyby(~posttax, by=~year, design=silc.rh.svy, FUN = svyqsr)
+
+#gini
+svygini(~houseinc , silc.rh.svy)
+
+
+# p2(wid. world) ----------------------------------------------------------------------
+
+
+#create age in silc.p so we know which persons to exclude
+silc.p <- silc.p %>% mutate(age=pb010 - pb140)
+silc.p_adults <- filter(silc.p, age>= 20)
+
+#now we count for every household-ID how many members are left
+hh_size <- silc.p_adults %>% group_by(pb010) %>% count(px030)
+
+#the resulting length of hh_size is slightly smaller than silc.p, because we have cut out the households where all members are <20 years old.
+#we attatch hh_size to silc.h and delete all cases where there is no match, because these are the households with all members <20 years old.
+silc.h <- left_join(silc.h, hh_size, by=c('hb010'='pb010', 'hb030'='px030'))
+silc.h_adults <- na.omit(silc.h)
+
+#now we build the aggregates from the h-file and divide them by n for every household
+
+#aggregate 1
+silc.h_adults <- mutate(silc.h_adults, pretax_h=(hy110g+hy040g+hy090g)/n)
+
+#aggregate 2 is the same as aggregate 1 regarding the positions from the h-file
+
+#aggregate 3
+silc.h_adults <- mutate(silc.h_adults, posttax_h=pretax_h+(hy050g+hy060g+hy070g+hy080g-hy120g-hy130g-hy140g)/n)
+
+#we attatch silc.h_adults (only the columns of interest to us) to silc.p_adults and add up the full aggregates
+silc.ph_adults <- left_join(silc.p_adults, select(silc.h_adults, c('hb010', 'hb030', 'pretax_h', 'posttax_h')), by=c('pb010'='hb010', 'px030'='hb030'))
+
+#pre-tax factor income
+silc.ph_adults <- mutate(silc.ph_adults, pretaxfactor=py010g+py021g+py050g+pretax_h)
+
+#pre-tax national income
+silc.ph_adults <- mutate(silc.ph_adults, pretaxnational=pretaxfactor+py090g+py100g)
+
+#post-tax disposable income
+silc.ph_adults <- mutate(silc.ph_adults, posttax=pretaxnational+py110g+py120g+py130g+py140g+posttax_h)
+
+#we can take now this table and cut out only the collumns that we need and rename them
+silc.ph_adults <- rename(silc.ph_adults, 'year'=pb010, 'persID'=pb030, 'perswght'=pb040, 'brthyr'=pb140, 'sex'=pb150, 'houseID'=px030, 'empcashinc'=py010g, 'noncash'=py020g, 'selfcashinc'=py050g, 'privatepens'=py080g, 'unempben'=py090g, 'oldageben'=py100g, 'survivorben'=py110g, 'sicknessben'=py120g, 'disabilben'=py130g, 'educationben'=py140g, 'compcar'=py021g, 'highed'=pe040, 'supervise'=pl150, 'firstjob'=pl190, 'yrsworkd'=pl200)
+
+#recode gender and education variables to factor variable
+silc.ph_adults <- silc.ph_adults %>% mutate( highed = factor(highed, factor(levels=c(0:5),  labels = c("pre-primary","primary","lower secondary","upper secondary","post secondary","tertiary"))), gender = factor(sex,labels = c('Male','Female')))
+
+save(silc.ph_adults, file='./data/P2.rda',compress = 'xz')
+
+
+# P2 measures -------------------------------------------------------------
+
+#convert NA to zero some NAs seem to be generated 
+silc.ph_adults[is.na(silc.ph_adults)] <- 0
+
+library(survey)
+library(convey)
+
+silc.ph_adults <- silc.ph_adults %>% mutate(id_h=paste0(persID))
+
+##pb040=rb050
+##perswght= rb050
+##id= rb030
+
+silc.ph_adults <- svydesign(ids=~id_h,
+                            weights=~perswght,
+                            data=silc.ph_adults) %>% convey_prep()
+
+#mean
+svyby(~posttax, by=~year, design=silc.ph_adults, FUN = svymean)
+
+#median & top 10
+#watch out: svyby tries to compute s.e but svyquantile won't produce them, need to tell either keep.var = FALSE or ci = TRUE 
+# ci = TRUE will yield warnings regarding vcv, still same results
+
+#quantiles top 10:
+svyby(~posttax, by=~year, design=silc.ph_adults, FUN = svyquantile, c(0.9), ci = TRUE)
+
+#median
+svyby(~posttax, by=~year, design=silc.ph_adults, FUN = svyquantile, c(0.5), ci = TRUE)
+
+#80 to 20
+svyby(~posttax, by=~year, design=silc.ph_adults, FUN = svyqsr)
+
+#gini
+svyby(~posttax, by=~year, design=silc.ph_adults, FUN = svygini)
+
