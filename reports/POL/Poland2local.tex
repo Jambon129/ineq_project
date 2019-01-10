@@ -1,0 +1,867 @@
+\documentclass[a4paper]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[utf8]{inputenc}
+\usepackage{polyglossia}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{csquotes}
+\usepackage[toc,page]{appendix}
+\usepackage{graphicx}
+\usepackage{fontspec}
+\setmainlanguage{english}
+\usepackage{fullpage}
+\usepackage[dvipsnames]{xcolor}
+%citation stuff
+\usepackage[style=authoryear, backend=bibtex]{biblatex}
+\DeclareNameAlias{author}{last-first}
+\bibliography{mybib}
+
+
+
+%title stuff
+\title{\huge Income Distribution in Poland \\
+\Large \center A glance at recent EU-SILC data}
+\author{Andreas Chmielowski \thanks{Wirtschaftsuniversität Wien}}
+
+\date{\today}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+%\SweaveOpts{concordance=TRUE}
+%\SweaveOpts{concordance=TRUE}
+
+
+\begin{titlepage}
+
+\hfill %reference point for the vspace command below
+\vspace{2cm}
+	\begin{center}
+	    \rule{0.7\textwidth}{1.6pt}\vspace*{-\baselineskip}\vspace*{2pt} % Thick horizontal rule
+	        \vspace{0.3cm}
+	
+	        \Huge Income distribution in Poland \\
+	        \Large \center A glance at recent EU-SILC data \\
+	        \vspace{0.5cm}
+	        \rule{0.6\textwidth}{0.4pt} % Thin horizontal rule
+	        \vspace{2cm}\\
+	        \large a seminar paper by \\
+	        \Large \center Andreas Chmielowski \large and \Large Patrick Zommer \\
+	        \large \center January 2019
+	        \vfill
+		    \begin{figure}[h]
+		            \centering
+		            \includegraphics[width=0.4\textwidth]{flaga.png}
+		    \end{figure}
+	
+	        \vspace{1cm}
+	
+	    \large for the specialization seminar\\
+	    \Large \center 2063 Ökonomie der Verteilung\\
+	    \vspace{0.3cm}
+	    \large Wirtschaftsuniversität Wien
+	    \vspace{2cm}
+
+	    \end{center}
+    \end{titlepage}
+
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{3}
+
+
+\section{Introduction}
+The rise of income and wealth inequality in the last decades, especially in developed countries, has increasingly caught the attention of both policy makers and academics. Numerous economists have considered a too high level of inequality as harmful to economic growth and point out the consequences for social mobility, happiness and social trust \parencite{brzezinski2017, Muszynska2018}. There is also an ongoing discussion on the association of wealth and income concentration with the concentration of political power, and connected to this, the effect of inequality within a society on democracy \parencite{houle2009}. 
+
+The study at hand investigates the inequality of yearly income in Poland. In section \ref{literature} we take a look at the current literature on the topic and gain an initial understanding of distinctive features characterizing income inequality in Poland. In section \ref{silc} we pursue with our own analysis of the newest available (2017) data of the \textit{EU Survey of Income and Living Conditions} (EU-SILC), where we take a look on established inequality measures (such as the Gini coefficient or S80/S20, which are going to be explained in the respective section) and their history since 2005. In order to observe also the differences before and after taxation and social transfers, we investigate these measures for three distinct, predefined income concepts. Also, we take a more detailed look at some of the determining factors for income inequality via regression analysis. In particular, we investigate the impact of gender and education on three income concepts in two different points in time. Finally, in section \ref{conclusion} we summarize our results and discuss their impact for potential policy measures aiming to mitigate income inequality. 
+
+
+\section{Literature Review} 
+\label{literature}
+The history of income distribution in Poland is characterized by a substantial increase in inequality since 1989, followed by a moderating period since 2007 in which inequality has stabilized. As \cite{brzezinski2017} points out, the observed rise in wage dispersion in Poland between 1989 and 2015 was higher than in comparable transition countries such as Hungary or the Czech Republic, and according to \cite{jedrzejczak2008}, the main source of differences in income are wages and salaries (which indicates a lack of inequality-minimizing social transfers). In recent years, however, no significant rising trend has been observed \parencite{brzezinski2017} and some studies have even measured a decline in divergence on a household level \parencite{Gestwicki2016}. Moreover, \cite{Muszynska2018} have reported a decrease in inequality between 2005 and 2014. 
+
+Income inequality is nowadays still high, with a 2014 high-to-low ratio (S10/S90) in wages of 4.7, which is the highest among EU member states. The reason for this is a relatively high university wage premium (compared to the EU average), which denotes the difference in average income between earners holding a university degree and earners with only lower education. The former have been subject to a fast increase in wages after the end of socialism, while the wages for professions requiring lower education developed in a slower pace. However, this university wage premium is currently decreasing. Other contributing factors are a low collective contract density, a relatively large low-wage sector and the fact that the Polish income tax system, which has only two progression steps, has only a negligible effect on reducing income inequality \parencite{brzezinski2017}. Furthermore, \cite{ruzik2010gender} argued that a substantial gender pay gap in Poland exists. Specifically they compared formal and informal work and showed that in informal work at the bottom of the distribution the inequality widens, whilst in formal work it is among the higher incomes the case.
+
+Several papers point out the consequences of the financial crisis of 2008 and the subsequent Great Recession for the Polish economy. An early assessment by \cite{mitrus2010} of the 2009 labor law changes as an answer to the crisis highlights how the regulations for increased labor market flexibility were able to help employers to overcome temporarily decreased demand in consequence to the crisis. This is debated by \cite{mrozowicki2013}, who argue that leading multinational retail companies in CEE were not strongly affected by the crisis to begin with and might have used the crisis as a justification to expand precarious employment. A survey conducted among 1500 firms by \cite{strzelecki2016} finds that the only mild increase in unemployment and the overall absence of a recession in Poland can mainly be attributed to the high nominal and real wage flexibility, while other labor market reforms only had a constrained impact. Most of the firms, which have participated in the survey, reported no change in their capacity to adjust labor costs due to these reforms. In spite of the absence of a recession and sustained economic growth due to both structural funds from the EU and high domestic consumption, \cite{kosny2013} finds in increased polarization of income on the household level in this time.  
+
+One very important topic constitutes the impact of inequality on the Polish society. \cite{brzezinski2017} argues that there is a correlation between income inequality and a growing disappointment in the economic and social system as such. High incomes are broadly perceived as undeserved and associated with corruption. \cite{letki2014rise} point out that in spite of the decline of material deprivation in Poland since 1989, the perceived inaction of the Polish government regarding inequality (due to the focus on combating absolute levels of poverty rather than relative) also undermines the legitimacy of the political system and has resulted in lower confidence in political institutions and declining voting turn-out and levels of unionization. On the other hand, there have also been observed rising levels of social trust and stable social capital, as many Poles have tried to compensate for this on an individual level via the support of charity organizations. 
+
+Two policy changes might have affected the distribution of income in Poland very recently: On the one hand, the raise of minimum wage in 2015 might have potentially resulted in a decrease in income inequality due to the relatively large low-wage sector. On the other hand, the launch of the fertility promotion benefit program "500+", which yields means-tested financial benefits for the first child and universal benefits from the second child onward, is currently said to have ambiguous effects: While the consequent radical reduction of child poverty is widely recognized, some studies point out the resulting negative effect on labor force participation, especially for eligible mothers \parencite{bargu2018, magda2018}. As the paper at hand will later proceed to investigate the newest EU-SILC data (2017), we might also assess these recent policy measures regarding its impact on income inequality.
+
+In summary, the literature conveys a very coherent picture of income inequality in Poland and already implies possible policy measures for its reduction:
+
+
+\begin{itemize}
+    \item As the main source of income inequality is wage dispersion, it is clear that the factors causing this dispersion need to be addressed by the policy maker. One such factor is the relatively high (but already decreasing) university wage premium, which potentially could be lowered further by adequate educational policies.  
+    \item Other possible measures would address the relatively large low-wage sector. The recent rise in minimum wages is possibly a step into this direction.
+    \item Furthermore, capability of the tax system to redistribute income should be increased by raising the tax burden of high-wage individuals and simultaneously lowering it for low-wage earners \parencite{brzezinski2017}. 
+    \item Also, the targeting of social protection programs should be improved \parencite{Muszynska2018}. Whether the new program "500+" denotes such an improvement, or might be another factor actually contributing to inequality due to the suspected effect of reducing labor-force participation in women, still remains to be answered. 
+\end{itemize}
+
+
+\section{Empirical Analysis}
+\label{silc}
+
+\subsection{Income and population concepts}
+For our analysis of income inequality in Poland we use EU-SILC data from 2005 until 2017. From the large stock of income componets this dataset provides, we have decided for three income concepts as a basis for our analysis. Observed differences in the development of our inequality measures between these concepts will help us understand the roots of income inequality: For example, a Gini coefficient that is high before but low a after taxation and the receipt of social transfers might serve as an indication for the redistributive power of a country's fiscal policy. The three income concepts are:
+
+\begin{enumerate}
+  \item \label{pretaxfactor} \textbf{Pre-tax factor income:} This concept incorporates only earnings from active participation in the labor market and is equivalent to the "primary income" according to the Canberra Group standard \parencite{canberra}. Inquality measurements applied to this income concept tell us how large inequality is, if the observed country had no tax or social transfer system at all. It is composed of the following EU-SILC variables:
+  \begin{itemize}
+    \item gross employee cash or near cash income (PY010G)
+    \item company car (PY021G)
+    \item gross cash benefits or losses from self-employment (including royalties) (PY050G)
+    \item income received by people aged under 16 (HY110G)
+    \item income from rental of a property or land (HY040G)
+    \item	interests, dividends, profit from capital investments in unincorporated business (HY090G)
+    \item pensions received from individual private plans (PY080G)
+  \end{itemize}
+\item \label{pretaxnational} \textbf{Pre-tax national income:} This concept builds on the pre-tax factor income, but adds unemployment and old-age benefits. Differences between pre-tax national and pre-tax factor income thus indicate reforms regarding these two transfers:
+  \begin{itemize}
+  \item everything from concept~\ref{pretaxfactor}: pre-tax factor income
+  \item unemployment benefits (PY090G)
+  \item old-age benefits (PY100G)
+  \end{itemize}
+\item \textbf{Post-tax disposable income:} As the name indicates, this is what individuals can spend effectively after the subtraction of taxes and social contributions and the receipt of any other transfers. It consists of the sum of the follwing variables:
+\begin{itemize}
+  \item survivor's benefits (PY110G) 
+  \item sickness benefits (PY120G) 
+  \item disability benefits (PY130G) 
+  \item	education-related allowances (PY140G)
+  \item family/children related allowances (HY050G)
+  \item social exclusion not elsewhere classified (HY060G) 
+  \item housing allowances (HY070G) 
+  \item regular inter-household cash transfers received (HY080G)
+\end{itemize}
+These variables are being subtracted:
+\begin{itemize}
+  \item regular taxes on wealth (HY120G)
+  \item	regular inter-household cash transfer paid (HY130G) 
+  \item	tax on income and social insurance contributions (HY140G)
+\end{itemize}
+
+\end{enumerate}
+Shown within parenteses are the specific variable codings from the EU-SILC data set. Note that all these variables denote yearly income components in Euro (EUR). Also, only some of these variables are distinctly attributable to the interviewed individuals, while others (those with codings starting with an "H") have only been determined on a household basis. It is therefore additionally necessary to define the populations our analysis should be based on. We decided for the follwing two concepts:
+\begin{itemize}
+\item \textbf{P1:} Here we include the whole population in our analysis and assume that all ressources (i.e. individual earnings and income on a household basis alike) are being shared equally among all household members. We take into account economies of scale with a household via equivalence scaling (that is, we divide the sum of household income by equivalence factor HX050 before appointing it individually to the household members). This is equivalent to the Eurostat concept of "equivalised disposable income"~\parencite{eurostat1}.
+\item \textbf{P2:} Here, we only include persons of age 20 or higher into our analysis and assume that everyone keeps their individually earned/received money to themselves. Forms of income that are only documented on a household level are summed up and then distributed equally among all household members of 20 years or more. This corresponds to the population concept of the Wealth and Income Database~\parencite{widworld1}.
+\end{itemize}
+
+In what follows, we are going to calculate every measurement of income inequality for every possible combination of income and population concept, respectively. In order to control for inflation, all income concepts have been divided by the Eurostat CPI with base year 2015 \parencite{eurostat_cpi}. It is important to note that the income reference period is lagged, meaning that for e.g. 2017, the reported income was actually earned in 2016 \parencite{eurostat2}. We took this into account for our analysis and applied every CPI value for the year the income has actually been earned (i.e. the CPI for 2015 was attibuted to the income reported in 2016, but earned in 2015.) However, we did not shift the incomes themselves, the calculated indices are therefore referring to the time of \textit{reporting} of having the money earned rather than having the money earned.
+
+As the outcomes for most of these inequality measures look pretty much the same for both population concepts P1 and P2, we have decided to focus on mostly on the description of the results for P1 and have put the tables and figures for P2 into the appendix. 
+
+\subsection{Mean Income}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(dplyr)}
+\hlkwd{library}\hlstd{(ggplot2)}
+\hlkwd{library}\hlstd{(survey)}
+\hlkwd{library}\hlstd{(convey)}
+\hlkwd{library}\hlstd{(scales)}
+\hlkwd{load}\hlstd{(}\hlstr{'../../data/P1.rda'}\hlstd{)}
+\hlkwd{load}\hlstd{(}\hlstr{'../../data/P2.rda'}\hlstd{)}
+
+
+\hlcom{#convert NA to zero}
+\hlstd{P1[}\hlkwd{is.na}\hlstd{(P1)]} \hlkwb{<-} \hlnum{0}
+\hlstd{P2[}\hlkwd{is.na}\hlstd{(P2)]} \hlkwb{<-} \hlnum{0}
+
+\hlcom{#controll for inflation by division of the income aggregates by cPI}
+
+\hlstd{P1}\hlkwb{<-}\hlkwd{mutate}\hlstd{(P1,} \hlkwc{PTFI_clean}\hlstd{=pretaxfacinc}\hlopt{*}\hlnum{100}\hlopt{/}\hlstd{CPI)}
+\hlstd{P1}\hlkwb{<-}\hlkwd{mutate}\hlstd{(P1,} \hlkwc{PTNI_clean}\hlstd{=pretaxnational}\hlopt{*}\hlnum{100}\hlopt{/}\hlstd{CPI)}
+\hlstd{P1}\hlkwb{<-}\hlkwd{mutate}\hlstd{(P1,} \hlkwc{PTDI_clean}\hlstd{=posttax}\hlopt{*}\hlnum{100}\hlopt{/}\hlstd{CPI)}
+
+\hlstd{P2}\hlkwb{<-}\hlkwd{mutate}\hlstd{(P2,} \hlkwc{PTFI_clean}\hlstd{=pretaxfactor}\hlopt{*}\hlnum{100}\hlopt{/}\hlstd{CPI)}
+\hlstd{P2}\hlkwb{<-}\hlkwd{mutate}\hlstd{(P2,} \hlkwc{PTNI_clean}\hlstd{=pretaxnational}\hlopt{*}\hlnum{100}\hlopt{/}\hlstd{CPI)}
+\hlstd{P2}\hlkwb{<-}\hlkwd{mutate}\hlstd{(P2,} \hlkwc{PTDI_clean}\hlstd{=posttax}\hlopt{*}\hlnum{100}\hlopt{/}\hlstd{CPI)}
+
+\hlstd{P1} \hlkwb{<-} \hlstd{P1} \hlopt{%>%} \hlkwd{mutate}\hlstd{(}\hlkwc{id_h}\hlstd{=}\hlkwd{paste0}\hlstd{(persID))}
+\hlstd{P2} \hlkwb{<-} \hlstd{P2} \hlopt{%>%} \hlkwd{mutate}\hlstd{(}\hlkwc{id_h}\hlstd{=}\hlkwd{paste0}\hlstd{(persID))}
+
+\hlstd{P1.svy} \hlkwb{<-} \hlkwd{svydesign}\hlstd{(}\hlkwc{ids}\hlstd{=}\hlopt{~}\hlstd{id_h,}
+                         \hlkwc{weights}\hlstd{=}\hlopt{~}\hlstd{perswght,}
+                         \hlkwc{data}\hlstd{=P1)} \hlopt{%>%} \hlkwd{convey_prep}\hlstd{()}
+
+\hlstd{P2.svy} \hlkwb{<-} \hlkwd{svydesign}\hlstd{(}\hlkwc{ids}\hlstd{=}\hlopt{~}\hlstd{id_h,}
+                         \hlkwc{weights}\hlstd{=}\hlopt{~}\hlstd{perswght,}
+                         \hlkwc{data}\hlstd{=P2)} \hlopt{%>%} \hlkwd{convey_prep}\hlstd{()}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+In Table~\ref{mean_p1} we can see the average yearly income for all three income concepts for P1, and Figure~\ref{fig:figure_meanp1} shows us the translation of these numbers into graphs. Since 2005 the mean in our income measures increased steeply until 2009. 
+Following the financial crisis, a huge fall in our income measures occurred and post-tax disposable income reached pre-crisis levels again in 2017.
+Interestingly, from 2016 to 2017 pre-tax factor and pre-tax national income remained rather stable, while post-tax disposable income increased, which might lead to the conclusion that redistributive measures were effective. Recall that in 2015 a new minimum wage and in 2016 the fertility benefit "500+" was introduced.
+
+Looking at the growth rate of income we can see that the increase in the pre-crisis period was much higher. This seems to be due to the fact that real wage growth between 2004 and 2007 was exceptionally high and unemployment was reaching record lows creating wage pressure. Following the financial crisis wage growth started to fall and began to recover again in 2013 \parencite{lewandowski2018labor, gajewski2015labour}. These differences in income growth along time correspond to differences in Polish GDP growth in the same time (very high before the crisis, less high afterwards), providing a possible explanation for the former (see Figure~\ref{fig:worldbank}).
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Jan 10 21:02:59 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+  \toprule
+ & Pre-tax factor & Pre-Tax National & Post-Tax Disposable \\ 
+  \midrule
+2005 & 3432.31 & 4458.39 & 3617.56 \\ 
+  2006 & 4478.94 & 5713.31 & 4619.20 \\ 
+  2007 & 5062.10 & 6395.30 & 5110.33 \\ 
+  2008 & 5968.71 & 7374.67 & 5929.80 \\ 
+  2009 & 6897.48 & 8460.68 & 6894.44 \\ 
+  2010 & 5598.75 & 6938.91 & 5666.06 \\ 
+  2011 & 6160.75 & 7566.86 & 6270.84 \\ 
+  2012 & 6071.95 & 7442.54 & 6128.98 \\ 
+  2013 & 5865.50 & 7267.23 & 5987.89 \\ 
+  2014 & 6040.70 & 7467.56 & 6126.66 \\ 
+  2015 & 6167.22 & 7662.28 & 6331.74 \\ 
+  2016 & 6477.48 & 8015.33 & 6659.41 \\ 
+  2017 & 6493.47 & 8014.74 & 6823.70 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Mean yearly income in 2015 EUR for all three income concepts for P1 (EU-SILC 2018, Eurostat 2019).} 
+\label{mean_p1}
+\end{table}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_meanp1-1} 
+
+}
+
+\caption[Mean income for all three income concepts over time for P1]{Mean income for all three income concepts over time for P1. Pre-tax factor income is dark blue, pre-tax national income is blue and post-tax disposable income is light blue. The black horizontal line facilitates comparison of this mean with other measures.}\label{fig:figure_meanp1}
+\end{figure}
+
+
+\end{knitrout}
+Regarding P2, we see no significant difference in the development of the mean income variable, expect for a lower level, generally. We ascribe this to the circumstance of P2 being a more individualistic population concept, where taxes are shared equally between household members but salaries and wages are not. (Meaning that even individuals without own income are conceptually being burdened with taxes, pushing the mean income downwards.) 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+
+{\centering \includegraphics[width=\maxwidth]{figure/worldbank-1} 
+
+}
+
+\caption[GDP growth in Poland in the observed time period of this study]{GDP growth in Poland in the observed time period of this study. Mean and median income growth seems to correlate with GDP growth, as it was much higher before the crisis. ( Recall that the EU-SILC data is lagged by one year when it comes to income data.}\label{fig:worldbank}
+\end{figure}
+
+
+\end{knitrout}
+
+\subsection{Median Income}
+The median income (Table~\ref{median_p1} and Figure~\ref{fig:figure_medianp1}) shows a similar pattern compared to the mean income, which should not be a huge surprise. A big difference is that the median is constantly smaller than the mean income, which is a standard pattern in income and wealth distributions leading to the conclusion that very high incomes skew the income distribution to the right (see also Figure~\ref{fig:figure_density} as an examplary income distribution). Regarding the growth rates the same conclusio as mentioned already before at the mean applies.
+We see that from 2016 to 2017, the median post-tax disposable income increased, while our other income concepts decreased or remained stable. 
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Jan 10 21:03:13 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+  \toprule
+ & Pre-tax factor & Pre-Tax National & Post-Tax Disposable \\ 
+  \midrule
+2005 & 2339.38 & 3533.09 & 3025.15 \\ 
+  2006 & 3262.46 & 4648.04 & 3879.54 \\ 
+  2007 & 3853.85 & 5290.07 & 4313.25 \\ 
+  2008 & 4643.12 & 6115.87 & 4987.60 \\ 
+  2009 & 5487.80 & 7032.77 & 5872.59 \\ 
+  2010 & 4529.12 & 5866.49 & 4878.59 \\ 
+  2011 & 4963.94 & 6466.17 & 5421.10 \\ 
+  2012 & 4893.44 & 6315.53 & 5253.94 \\ 
+  2013 & 4780.78 & 6233.28 & 5174.28 \\ 
+  2014 & 4897.38 & 6387.94 & 5304.40 \\ 
+  2015 & 5056.14 & 6575.39 & 5517.07 \\ 
+  2016 & 5436.02 & 7017.61 & 5883.27 \\ 
+  2017 & 5433.10 & 6935.93 & 5957.09 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Median yearly income in 2015 EUR for all three income concepts for P1 (EU-SILC 2018, Eurostat 2019).} 
+\label{median_p1}
+\end{table}
+
+Our observations regarding the median of P2 are analogous to those regarding the differences in the mean between P1 and P2. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_medianp1-1} 
+
+}
+
+\caption[Median income in 2015 EUR for the three income concepts over time for P1]{Median income in 2015 EUR for the three income concepts over time for P1. The graphs for pre-tax factor income, pre-tax national income and post-tax disposable income are again dark blue, blue and light blue, respectively.}\label{fig:figure_medianp1}
+\end{figure}
+
+
+\end{knitrout}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_density-1} 
+
+}
+
+\caption[A depiction of of the distribution post-tax disposable income in 2017]{A depiction of of the distribution post-tax disposable income in 2017. As visible, mean and median are very close to each other.}\label{fig:figure_density}
+\end{figure}
+
+
+\end{knitrout}
+
+\subsection{Gini Coefficient}
+The Gini coefficient measures the area between the actual Lorenz-curve and one which would be realized if there was absolute equality among all individuals in the obseved society. It ranges between 0, which means that all individuals have exactly the same income, and 1, which means that one individual has all the income earned in the society, and all others have nothing. That is, the higher the value of the Gini coefficient, the higher the income inequality in the observed society.
+
+In Table~\ref{gini_p1} we have listed the Gini coefficents for all three income concepts over all observed years. We can see a decrease over time for all three concepts, being in line with the findings of \cite{brzezinski2017} and \cite{Muszynska2018}. Table~\ref{gini_p1} also tells us about the redristributional power of the Polish tax and social transfer system: If there was no such redistributional system at all, the income inequality actually experienced by the Polish society would have a Gini of $0.48$ instead of $0.29$ for 2017.
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Jan 10 21:03:32 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+  \toprule
+ & Pre-tax factor & Pre-tax national & Post-tax disposable \\ 
+  \midrule
+2005 & 0.58 & 0.44 & 0.39 \\ 
+  2006 & 0.54 & 0.40 & 0.33 \\ 
+  2007 & 0.52 & 0.39 & 0.32 \\ 
+  2008 & 0.50 & 0.38 & 0.32 \\ 
+  2009 & 0.49 & 0.37 & 0.31 \\ 
+  2010 & 0.49 & 0.36 & 0.31 \\ 
+  2011 & 0.48 & 0.37 & 0.31 \\ 
+  2012 & 0.48 & 0.37 & 0.31 \\ 
+  2013 & 0.48 & 0.36 & 0.31 \\ 
+  2014 & 0.48 & 0.36 & 0.31 \\ 
+  2015 & 0.48 & 0.36 & 0.31 \\ 
+  2016 & 0.47 & 0.35 & 0.30 \\ 
+  2017 & 0.48 & 0.36 & 0.29 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Gini coefficients over time for all three concepts for P1 (EU-SILC 2018, Eurostat 2019).} 
+\label{gini_p1}
+\end{table}
+
+The values of Table~\ref{gini_p1} are depicted in Figure~\ref{fig:figure_ginip1}. Most striking is here the synchronous movement of the three lines over time, which indicates that changes over time in the Gini coefficient did not stem from changes in the redistributional system, but in changes from pre-tax factor income: When inequality in pre-tax factor income was high in 2005, post-tax disposible income was also high, but with a certain distance below pre-tax factor income. When inequality began to shrink in pre-tax factor income, it shrank proportionally in post-tax disposible income. Apparently, the Polish tax and social transfer system is designed in a way that allows for a certain reduction of income inequality, but for most of the time there were no policies in place which would have fortified redistribution in times of higher pre-tax factor inequality. An exception are the years 2016 and 2017, where the Gini rose for pre-tax factor and pre-tax national income but fell for post-tax disposable income. This might depict the combined effect of the 2015 introduced new minimum wage and the 2016 introduced fertility benefit "500+", although these data alone does not allow for a thorough investigation of this suspicion.      
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_ginip1-1} 
+
+}
+
+\caption[The development of the Gini coefficient for all three income concepts over time for P1]{The development of the Gini coefficient for all three income concepts over time for P1. As everywhere, pre-tax factor income is again dark blue, pre-tax national income is blue and post-tax disposable income is light blue.}\label{fig:figure_ginip1}
+\end{figure}
+
+
+\end{knitrout}
+Table~\ref{gini_p2} and Figure~\ref{fig:figure_ginip2} draw a much different picture of the Gini index in Poland. Although the trend here is equally decreasing, the levels for each year and each income concept are much higher, and also, in Figure~\ref{fig:figure_ginip2}, the graph referring to post-tax disposable income is \textit{above} the graph referring to pre-tax national income. According to this depiction, unemployment and old-age benefits manage to reduce initial inequality in pre-tax factor income, but then the combination of all other benefits and the deduction of taxes increases inequality again. Again, we attribute these two properties (the overall higher Gini levels and the increase in inequality between pre-tax national and post-tax income) to the fact that P2 is a much more individualistic population concept. In opposite to P1, the household members keep their individually earned money and do not share it with the others, while the tax burden is distributed among all household members. Therefore, individuals with a higher income only get to pay the average of the household taxes (which is less then what they would have to pay on an individual tax basis), while those with low individual income must pay the same average (which is higher than what they would have to pay individually).
+
+We can thus conclude that inequality is decreasing over time in Poland, but mostly not because of the Polish redistributional system, but because of the decrease in inequality in pre-tax factor income. The impact of the redistributional system, although existent, is ambiguous and seems to depend on the underlying population concept. The newly introduced benefit "500+" and the new minimum wage might accelerate this decreasing trend, but at this point, it remains open to which extend.  
+
+\subsection{S80/S20 measure}
+The S80/S20 ratio is another method for measuring inequality. It calculates the ratio of the total income of the highest income quintile (top 20\%) to the total income to lowest quintile (bottom 20\%). This ratio tells us how many times higher the income of the top 20\% compared to the bottom 20\% is.
+
+This measure is not entirely unproblematic. During our calculation, we found that the sum of pre-tax factor income of the bottom 20\% for P1 was 0; likewise the pre-tax factor and pre-tax national income for the bottom 20\% in P2. This forced us to exclude all individuals with an income of zero, which denotes a distortion of our data to some extend. Also, all values for P2 of the S80/S20 measure for post-tax income are negative (see Table~\ref{s80_s20p2} and Figure~\ref{fig:figure_s80_s20p2} in the appendix). This can be explained by the fact that the sum of the bottom 20\% is negative in P2, presumably because in this population concept, taxes are being shared among household members but individual individual incomes are not. Of course, this means that the S80/S20 measurements for this income concept are not valid, and the results regarding this measure must generally be handled with care.
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Jan 10 21:03:59 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+  \toprule
+ & Pre-tax factor & Pre-tax national & Post-tax disposable \\ 
+  \midrule
+2005 & 15.93 & 14.90 & 9.26 \\ 
+  2006 & 12.89 & 10.30 & 5.64 \\ 
+  2007 & 11.66 & 8.94 & 5.26 \\ 
+  2008 & 10.33 & 7.91 & 5.12 \\ 
+  2009 & 9.70 & 7.49 & 4.96 \\ 
+  2010 & 9.46 & 7.37 & 4.95 \\ 
+  2011 & 9.35 & 7.97 & 4.95 \\ 
+  2012 & 9.04 & 7.92 & 4.92 \\ 
+  2013 & 9.19 & 7.89 & 4.87 \\ 
+  2014 & 9.19 & 7.88 & 4.90 \\ 
+  2015 & 8.98 & 7.91 & 4.92 \\ 
+  2016 & 8.12 & 7.39 & 4.75 \\ 
+  2017 & 8.99 & 7.65 & 4.55 \\ 
+   \bottomrule
+\end{tabular}
+\caption{S80/S20 ratios over time for all three income concepts for P1 (EU-SILC 2018, Eurostat 2019).} 
+\label{s80_s20p1}
+\end{table}
+
+In Table~\ref{s80_s20p1}, we see the values for all income concepts for P1, and in Figure~\ref{fig:figure_s80_s20p1}, we see their plotted translation. We see a general accordance with our findings regarding the Gini coefficient: Inequality is decreasing over time, but mainly due to a decrease in pre-tax factor income. The other two income concepts seem to just "move along" with this development in a constant distance (again indicating the lack of policies strengthening redistribution independently of movements in the pre-tax factor income measures). Additionaly, we see the same hint for a reinforced distributional effect since the introduction of the new minimum wage and "500+" as in Figure~\ref{fig:figure_ginip1}, which might indicate a inequality-reducing effect of these policy measures. 
+
+For P2 (Table~\ref{s80_s20p2} and Figure~\ref{fig:figure_s80_s20p2}) we see a much weaker (especially in the earlier years) but still decreasing trend for pre-tax factor income and a almost steady level for pre-tax national income. This behavior of the graphs can again be explained by P2 being a more individualistic concept of population.   
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_s80_s20p1-1} 
+
+}
+
+\caption[The development of the S80/S20 ratio for all three income concepts over time for P1]{The development of the S80/S20 ratio for all three income concepts over time for P1. Pre-tax factor income is dark blue, pre-tax national income is blue and post-tax disposable income is light blue.}\label{fig:figure_s80_s20p1}
+\end{figure}
+
+
+\end{knitrout}
+
+\subsection{Share of the Top 10 Percent}
+Now we take a look at the total income share of the top 10\%, as shown in Table~\ref{top10p1} and depicted in Figure~\ref{fig:figure_top10p1}. For P1, we see a development similar to the ones of mean and median income: A steep increase before the crisis, then a drop at the crisis and then a slower increase until 2016, where we whitness a small drop again. An important difference, however, is that pre-tax factor income has the highest values in every year and post-tax disposable income the lowest, which means that the redistributional system in Poland reduces the income disparity between the top 10\% and the bottom 90\%.  
+
+For P2 we see a similar development for the three income concepts, but higher (because individual income is not being shared with other household members) and the post-tax income share is slightly higher than the pre-tax national income share (probably because of the shared tax burden in all households, which means also those without an individual income pay taxes and are therefore reducing the bottom 90\% share.)
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Jan 10 21:04:06 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+  \toprule
+ & Pre-tax factor & Pre-tax national & Post-tax disposable \\ 
+  \midrule
+2005 & 0.20 & 0.15 & 0.13 \\ 
+  2006 & 0.25 & 0.20 & 0.16 \\ 
+  2007 & 0.28 & 0.23 & 0.19 \\ 
+  2008 & 0.34 & 0.28 & 0.25 \\ 
+  2009 & 0.40 & 0.35 & 0.32 \\ 
+  2010 & 0.27 & 0.24 & 0.21 \\ 
+  2011 & 0.33 & 0.28 & 0.26 \\ 
+  2012 & 0.33 & 0.27 & 0.25 \\ 
+  2013 & 0.31 & 0.26 & 0.24 \\ 
+  2014 & 0.33 & 0.28 & 0.26 \\ 
+  2015 & 0.34 & 0.29 & 0.27 \\ 
+  2016 & 0.36 & 0.30 & 0.29 \\ 
+  2017 & 0.36 & 0.31 & 0.30 \\ 
+   \bottomrule
+\end{tabular}
+\caption{The total-income share of the top 10 percent over time for all three income concepts for P1 (EU-SILC 2018, Eurostat 2019).} 
+\label{top10p1}
+\end{table}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_top10p1-1} 
+
+}
+
+\caption[Depiction of the development of the total income share of the top 10 percent for all three income concepts over time for P1]{Depiction of the development of the total income share of the top 10 percent for all three income concepts over time for P1. Pre-tax factor income is dark blue, pre-tax national income is blue and post-tax disposable income is light blue.}\label{fig:figure_top10p1}
+\end{figure}
+
+
+\end{knitrout}
+\subsection{Determining Factors}
+As \cite{brzezinski2017} has pointed out, one main reason for wage dispersion is the relatively high unversity premium, which shows a decreasing trend over time. In order to test this proposition, we have estimated the mean effect of age, the highest educational attainment and gender on our three income concepts via OLS. We did this twice, for 2005 and 2013, in order to check for changes between these two points in time. (Unfortunately, 2017 was not feasible due to a change in coding of the "highest education attained"-variable in 2014, PE040). We have run this regression only for P2, as this population concept only includes individuals of age 20 or older, and EU-SILC only provides values for variable P040 for persons of age 16 or higher.
+
+The results of our analysis are shown in Table~\ref{ols2005} and Table~\ref{ols2013}. As gender and the education variable are interacted, we have to keep in mind that the intercept stands for the base category $male*pre-primary$, and the values for all other categories build up on this base category. For example, a man with upper secondary education adds the coefficient of $upper secondary$ to the sum of the intercept and his age multiplied with $age$ and $age^2$. A woman with pre-primary education adds $female$ to the sum of intercept and the age-mutliplied age coeffcients, and a woman with tertiary edcuation addtionally adds the $tertiary$-dummy and $female*tertiary$.  
+
+% Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
+% Date and time: Do., Jän 10, 2019 - 21:04:10
+\begin{table}[H] \centering 
+  \caption{Determining factors for all three income aggregates in 2005} 
+  \label{ols2005} 
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-4} 
+\\[-1.8ex] & Pre-tax factor & Pre-tax national & Post-tax disposable \\ 
+\\[-1.8ex] & (1) & (2) & (3)\\ 
+\hline \\[-1.8ex] 
+ $age$ & 387.573$^{***}$ & 268.232$^{***}$ & 253.166$^{***}$ \\ 
+  & (8.884) & (8.839) & (7.867) \\ 
+  & & & \\ 
+ $age^2$ & $-$4.293$^{***}$ & $-$2.246$^{***}$ & $-$2.089$^{***}$ \\ 
+  & (0.087) & (0.087) & (0.077) \\ 
+  & & & \\ 
+ $female$ & 431.439$^{***}$ & $-$137.487 & $-$258.360$^{**}$ \\ 
+  & (158.434) & (154.756) & (128.174) \\ 
+  & & & \\ 
+ $primary$ & $-$783.690$^{***}$ & $-$19.256 & 80.866 \\ 
+  & (161.200) & (159.087) & (131.132) \\ 
+  & & & \\ 
+ $lower secondary$ & $-$463.495$^{**}$ & 295.765 & 120.413 \\ 
+  & (211.211) & (211.117) & (270.595) \\ 
+  & & & \\ 
+ $upper secondary$ & 903.169$^{***}$ & 1,909.551$^{***}$ & 1,596.083$^{***}$ \\ 
+  & (164.178) & (161.337) & (135.121) \\ 
+  & & & \\ 
+ $post secondary$ & 2,165.975$^{***}$ & 3,093.466$^{***}$ & 2,202.532$^{***}$ \\ 
+  & (347.639) & (343.926) & (285.981) \\ 
+  & & & \\ 
+ $tertiary$ & 6,585.590$^{***}$ & 7,828.283$^{***}$ & 6,106.577$^{***}$ \\ 
+  & (387.428) & (380.794) & (330.218) \\ 
+  & & & \\ 
+ $female \times primary$ & $-$708.317$^{***}$ & $-$552.042$^{***}$ & $-$545.919$^{***}$ \\ 
+  & (169.216) & (166.955) & (139.154) \\ 
+  & & & \\ 
+ $female \times lower secondary$ & 81.698 & 410.061 & 562.585 \\ 
+  & (277.232) & (379.418) & (390.025) \\ 
+  & & & \\ 
+ $female \times upper secondary$ & $-$1,883.600$^{***}$ & $-$1,375.949$^{***}$ & $-$1,278.790$^{***}$ \\ 
+  & (169.327) & (165.899) & (138.382) \\ 
+  & & & \\ 
+ $female \times post secondary$ & $-$1,416.692$^{***}$ & $-$641.037 & $-$465.932 \\ 
+  & (396.729) & (390.374) & (330.945) \\ 
+  & & & \\ 
+ $female \times tertriary$ & $-$3,198.260$^{***}$ & $-$2,750.651$^{***}$ & $-$2,448.442$^{***}$ \\ 
+  & (423.878) & (417.352) & (360.582) \\ 
+  & & & \\ 
+ $intercept$ & $-$5,194.344$^{***}$ & $-$4,534.480$^{***}$ & $-$4,484.626$^{***}$ \\ 
+  & (249.185) & (245.334) & (214.607) \\ 
+  & & & \\ 
+\hline \\[-1.8ex] 
+Observations & 35,098 & 35,098 & 35,098 \\ 
+Log Likelihood & $-$349,529.500 & $-$349,261.000 & $-$344,502.500 \\ 
+Akaike Inf. Crit. & 699,087.000 & 698,550.000 & 689,033.100 \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table} 
+
+% Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
+% Date and time: Do., Jän 10, 2019 - 21:04:12
+\begin{table}[H] \centering 
+  \caption{Determining factors for all three income aggregates in 2013} 
+  \label{ols2013} 
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{3}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-4} 
+\\[-1.8ex] & Pre-tax factor & Pre-tax national & Post-tax disposable \\ 
+\\[-1.8ex] & (1) & (2) & (3)\\ 
+\hline \\[-1.8ex] 
+ $age$ & 546.463$^{***}$ & 396.613$^{***}$ & 334.482$^{***}$ \\ 
+  & (12.994) & (12.909) & (11.581) \\ 
+  & & & \\ 
+ $age^2$ & $-$6.060$^{***}$ & $-$3.539$^{***}$ & $-$2.852$^{***}$ \\ 
+  & (0.123) & (0.122) & (0.109) \\ 
+  & & & \\ 
+ $female$ & 696.976$^{*}$ & $-$969.672$^{**}$ & $-$398.259 \\ 
+  & (399.235) & (395.690) & (317.382) \\ 
+  & & & \\ 
+ $primary$ & $-$1,403.940$^{***}$ & $-$568.978 & $-$269.310 \\ 
+  & (391.835) & (381.854) & (310.329) \\ 
+  & & & \\ 
+ $lower secondary$ & $-$1,446.771$^{***}$ & $-$229.453 & $-$186.516 \\ 
+  & (425.703) & (414.691) & (352.380) \\ 
+  & & & \\ 
+ $upper secondary$ & 724.137$^{*}$ & 1,969.069$^{***}$ & 1,852.164$^{***}$ \\ 
+  & (391.064) & (378.925) & (307.293) \\ 
+  & & & \\ 
+ $post secondary$ & 1,943.506$^{***}$ & 3,223.290$^{***}$ & 2,785.555$^{***}$ \\ 
+  & (531.345) & (526.096) & (428.832) \\ 
+  & & & \\ 
+ $tertiary$ & 6,456.593$^{***}$ & 8,137.335$^{***}$ & 6,715.549$^{***}$ \\ 
+  & (477.537) & (464.223) & (385.781) \\ 
+  & & & \\ 
+ $female \times primary$ & $-$1,178.116$^{***}$ & $-$559.948 & $-$781.947$^{**}$ \\ 
+  & (415.916) & (412.795) & (333.275) \\ 
+  & & & \\ 
+ $female \times lower secondary$ & $-$861.490 & 536.954 & 240.191 \\ 
+  & (555.026) & (551.536) & (493.577) \\ 
+  & & & \\ 
+ $female \times upper secondary$ & $-$3,430.541$^{***}$ & $-$2,008.930$^{***}$ & $-$2,339.025$^{***}$ \\ 
+  & (409.966) & (406.652) & (327.649) \\ 
+  & & & \\ 
+ $female \times post secondary$ & $-$2,918.570$^{***}$ & $-$1,218.899$^{**}$ & $-$1,737.282$^{***}$ \\ 
+  & (580.843) & (578.234) & (478.011) \\ 
+  & & & \\ 
+ $female \times tertriary$ & $-$3,976.897$^{***}$ & $-$2,578.248$^{***}$ & $-$2,848.267$^{***}$ \\ 
+  & (519.291) & (513.369) & (425.529) \\ 
+  & & & \\ 
+ $intercept$ & $-$6,191.714$^{***}$ & $-$5,346.796$^{***}$ & $-$4,916.882$^{***}$ \\ 
+  & (479.654) & (470.332) & (397.790) \\ 
+  & & & \\ 
+\hline \\[-1.8ex] 
+Observations & 26,512 & 26,512 & 26,512 \\ 
+Log Likelihood & $-$269,563.500 & $-$269,303.900 & $-$265,776.200 \\ 
+Akaike Inf. Crit. & 539,155.100 & 538,635.900 & 531,580.400 \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
+\end{tabular} 
+\end{table} 
+
+Our analysis shows indeed a very large university wage premium, especially for men: A man with tertiary education had in 2005 a pre-tax factor income 6,586 EUR higher than a man of the same age with no education at all, and still 4,420 EUR more than a man of same age with a post-secondary education. For women, the respective values are 3,819 EUR and 2,638 EUR. The redistributive system is able to temper these extreme differences among educational groups (the respective values regarding the post-tax disposable income for men are 6,107 EUR and 3,904 EUR, and for women 3,400 EUR and 1,922 EUR), but they remain high. Also, there is a very high difference between men and women both before and after redistribution by the tax and social transfer system.
+
+In 2013, the university wage premium relative to the intercept regarding the pre-tax factor income for men has slightly (6457 EUR) decreased, but regarding post-tax disposable income, it has even increased (6716 EUR). Same applies to women: The university wage premium relative to the intercept has decreased for pre-tax factor income (3177 EUR), but increased for post-tax disposable income (3469 EUR). One explanation for this phenomenom might be the poor redistributive performance of the Polish income tax system, which only has one progression step \parencite{pwc}. Of course, we also have to keep in mind that for P2 there is no individual taxation of incomes, presenting these premia in a very drastical light. Nonetheless, it has become clear that income inequality in Poland is indeed driven by gender and educational premia. Regarding the latter, this is in line with \cite{gomulka2016poland}, who states:
+
+ 
+\begin{displayquote} 
+It seems that the single most important factor is the rise in earnings inequality caused by increasing educational premia for highly-qualified workers employed in highly-skilled occupations coupled with the worsening of a relative position of workers employed in low-paying occupations.
+However, the improvement in the relative economic level indicator is so large that it justifies to call the period of the last 25 years a golden quarter century of the last three centuries of the Polish history based on GDP per capita, but it may be additionally supported by data on a substantial improvement in ecological indicators, much improved access of households and companies to the latest technologies for processing information, mass scale of travelling of Poles all over the world and a rise of life expectancy by about 10\% \parencite{gomulka2016poland}.
+\end{displayquote}
+
+Smart policies aiming to decrease income inequality must also aim on these specific cirumstances. Whether "500+" and the new minum wage contribute to a more equal income distribution is unclear from this regressional analysis.  
+
+\section{Conclusions}
+\label{conclusion}
+Our results regarding the inequality are on par with \cite{Gestwicki2016} which show declining divergence on the household level and \cite{Muszynska2018} who reported a decrease in inequality between 2005 and 2014, considering the Gini and S80/S20 income share ratio. 
+The median and mean income measures show a substantial increase since 2005, even considering the financial crisis and the following fall of income and slower growth rates in the aftermath, Poland has still managed to avoid stagnation. 
+
+From our estimation we can conclude that education is one of the main drivers for income dispersion. The differences between the lower educational levels are not that striking compared to the yield an individual will get with tertiary education, which matches with our key implication from the beginning, that the relative high university wage premium exists and leaves space for policy measures. The results regarding gender are also strong evidence for are gender pay gap in our estimation and is also conform with in the literature mentioned disparities between men and women and leaves potential for further investigation. 
+
+However, the findings presented in this study have to be treated with caution. As \cite{brzezinski2017} points out, survey data as the EU-SILC likely underlies a selection bias, because "\textit{high-income earners are difficult to capture in surveys, a tendency that may be more pronounced in Poland than in wealthier EU countries}" and are therefore underrepresented. According to this, the author follows, the observed significant reduction in income equality between 2004 and 2007 is not credible, and matching tax-authority data for the same period - which includes high-income households in a representative quantity - shows no such reduction. However, as this period marked only the beginning of of the EU-SILC surveys, chances are that later sets were controlled for this possibility by crosschecking other sources such as tax data \parencite{brzezinski2017}.   
+
+\section{Appendix}
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Jan 10 21:04:16 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+  \toprule
+ & Pre-tax factor & Pre-Tax National & Post-Tax Disposable \\ 
+  \midrule
+2005 & 2961.71 & 3976.82 & 3271.73 \\ 
+  2006 & 3612.31 & 4786.54 & 3917.26 \\ 
+  2007 & 4091.21 & 5358.35 & 4343.14 \\ 
+  2008 & 4779.90 & 6117.61 & 4982.75 \\ 
+  2009 & 5487.49 & 7021.10 & 5790.23 \\ 
+  2010 & 4420.53 & 5714.26 & 4723.63 \\ 
+  2011 & 4852.40 & 6134.69 & 5183.75 \\ 
+  2012 & 4785.42 & 6037.02 & 5050.79 \\ 
+  2013 & 4621.32 & 5892.13 & 4928.72 \\ 
+  2014 & 4749.53 & 6035.03 & 5034.96 \\ 
+  2015 & 4829.14 & 6175.72 & 5169.82 \\ 
+  2016 & 5063.39 & 6441.61 & 5415.61 \\ 
+  2017 & 5086.43 & 6441.96 & 5515.74 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Mean yearly income in 2015 EUR for all three income concepts for P2 (EU-SILC 2018, Eurostat 2019).} 
+\label{mean_p2}
+\end{table}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_meanp2-1} 
+
+}
+
+\caption[Mean income for all three income concepts over time for P2]{Mean income for all three income concepts over time for P2. As in Figure 1, pre-tax factor income is again dark blue, pre-tax national income is blue and post-tax disposable income is light blue.}\label{fig:figure_meanp2}
+\end{figure}
+
+
+\end{knitrout}
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Jan 10 21:04:29 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+  \toprule
+ & Pre-tax factor & Pre-Tax National & Post-Tax Disposable \\ 
+  \midrule
+2005 & 28.14 & 2981.82 & 2524.32 \\ 
+  2006 & 300.60 & 3630.00 & 3043.52 \\ 
+  2007 & 885.10 & 4139.90 & 3392.65 \\ 
+  2008 & 1533.40 & 4687.69 & 3812.71 \\ 
+  2009 & 2027.85 & 5407.90 & 4505.45 \\ 
+  2010 & 1524.24 & 4481.78 & 3717.49 \\ 
+  2011 & 1976.37 & 4875.90 & 4124.05 \\ 
+  2012 & 2144.14 & 4889.45 & 4076.44 \\ 
+  2013 & 2020.54 & 4817.14 & 4022.67 \\ 
+  2014 & 2147.68 & 4938.57 & 4113.19 \\ 
+  2015 & 2115.77 & 5012.12 & 4207.01 \\ 
+  2016 & 2638.83 & 5357.51 & 4468.11 \\ 
+  2017 & 2702.27 & 5456.91 & 4554.43 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Median yearly income in 2015 EUR for all three income concepts for P2 (EU-SILC 2018, Eurostat 2019).} 
+\label{median_p2}
+\end{table}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_medianp2-1} 
+
+}
+
+\caption[Median income in 2015 EUR for the three income concepts over time for P2]{Median income in 2015 EUR for the three income concepts over time for P2. Pre-tax factor income is again dark blue, pre-tax national income is blue and post-tax disposable income is again light blue.}\label{fig:figure_medianp2}
+\end{figure}
+
+
+\end{knitrout}
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Jan 10 21:04:37 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+  \toprule
+ & Pre-tax factor & Pre-tax national & Post-tax disposable \\ 
+  \midrule
+2005 & 0.73 & 0.56 & 0.60 \\ 
+  2006 & 0.71 & 0.55 & 0.57 \\ 
+  2007 & 0.69 & 0.53 & 0.56 \\ 
+  2008 & 0.68 & 0.53 & 0.56 \\ 
+  2009 & 0.67 & 0.52 & 0.54 \\ 
+  2010 & 0.67 & 0.51 & 0.54 \\ 
+  2011 & 0.66 & 0.52 & 0.54 \\ 
+  2012 & 0.66 & 0.51 & 0.53 \\ 
+  2013 & 0.66 & 0.51 & 0.53 \\ 
+  2014 & 0.66 & 0.51 & 0.53 \\ 
+  2015 & 0.66 & 0.51 & 0.52 \\ 
+  2016 & 0.65 & 0.50 & 0.51 \\ 
+  2017 & 0.64 & 0.50 & 0.50 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Gini coefficients over time for all three concepts for P2 (EU-SILC 2018, Eurostat 2019).} 
+\label{gini_p2}
+\end{table}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_ginip2-1} 
+
+}
+
+\caption[The development of the Gini coefficient for all three income concepts over time for P2]{The development of the Gini coefficient for all three income concepts over time for P2. Pre-tax factor income is again dark blue, pre-tax national income is blue and post-tax disposable income is light blue.}\label{fig:figure_ginip2}
+\end{figure}
+
+
+\end{knitrout}
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Jan 10 21:04:57 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+  \toprule
+ & Pre-tax factor & Pre-tax national & Post-tax disposable \\ 
+  \midrule
+2005 & 19.49 & 9.79 & -13.81 \\ 
+  2006 & 19.11 & 9.74 & -15.44 \\ 
+  2007 & 18.98 & 9.68 & -16.85 \\ 
+  2008 & 16.15 & 9.12 & -19.55 \\ 
+  2009 & 14.08 & 8.62 & -27.93 \\ 
+  2010 & 14.56 & 8.66 & -23.95 \\ 
+  2011 & 13.09 & 8.45 & -24.87 \\ 
+  2012 & 12.21 & 8.28 & -24.65 \\ 
+  2013 & 11.73 & 7.83 & -24.27 \\ 
+  2014 & 11.88 & 7.86 & -23.67 \\ 
+  2015 & 11.68 & 7.72 & -27.47 \\ 
+  2016 & 9.95 & 7.33 & -31.29 \\ 
+  2017 & 9.92 & 7.35 & -58.95 \\ 
+   \bottomrule
+\end{tabular}
+\caption{S80/S20 ratios over time for all three income concepts for P2 (EU-SILC 2018, Eurostat 2019).} 
+\label{s80_s20p2}
+\end{table}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_s80_s20p2-1} 
+
+}
+
+\caption[The development of the S80/S20 ratio for all three income concepts over time for P2]{The development of the S80/S20 ratio for all three income concepts over time for P2. Pre-tax factor income is dark blue, pre-tax national income is blue and post-tax disposable income is light blue.}\label{fig:figure_s80_s20p2}
+\end{figure}
+
+
+\end{knitrout}
+
+% latex table generated in R 3.5.1 by xtable 1.8-3 package
+% Thu Jan 10 21:05:05 2019
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+  \toprule
+ & Pre-tax factor & Pre-tax national & Post-tax disposable \\ 
+  \midrule
+2005 & 0.31 & 0.23 & 0.23 \\ 
+  2006 & 0.37 & 0.28 & 0.28 \\ 
+  2007 & 0.40 & 0.31 & 0.31 \\ 
+  2008 & 0.46 & 0.36 & 0.37 \\ 
+  2009 & 0.53 & 0.43 & 0.43 \\ 
+  2010 & 0.42 & 0.33 & 0.34 \\ 
+  2011 & 0.44 & 0.36 & 0.37 \\ 
+  2012 & 0.42 & 0.35 & 0.35 \\ 
+  2013 & 0.41 & 0.33 & 0.34 \\ 
+  2014 & 0.42 & 0.34 & 0.35 \\ 
+  2015 & 0.44 & 0.35 & 0.36 \\ 
+  2016 & 0.44 & 0.36 & 0.37 \\ 
+  2017 & 0.44 & 0.36 & 0.37 \\ 
+   \bottomrule
+\end{tabular}
+\caption{The total-income share of the top 10 percent over time for all three income concepts for P2 (EU-SILC 2018, Eurostat 2019).} 
+\label{top10p2}
+\end{table}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/figure_top10p2-1} 
+
+}
+
+\caption[Depiction of the development of the total income share of the top 10 percent for all three income concepts over time for P2]{Depiction of the development of the total income share of the top 10 percent for all three income concepts over time for P2. Pre-tax factor income is dark blue, pre-tax national income is blue and post-tax disposable income is light blue.}\label{fig:figure_top10p2}
+\end{figure}
+
+
+\end{knitrout}
+
+\section{References}
+\printbibliography[heading=none]
+
+\end{document}
+
+
+
