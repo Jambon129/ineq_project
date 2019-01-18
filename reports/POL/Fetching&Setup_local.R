@@ -5,7 +5,7 @@ library(survey)
 library(convey)
 
 #establish data connection (do NOT push with password inside!!!)
-pg <- src_postgres(dbname="datacube", host="ineq.wu.ac.at", user='lvineq',password = '', options="-c search_path=silc")
+pg <- src_postgres(dbname="datacube", host="ineq.wu.ac.at", user='lvineq',password = password, options="-c search_path=silc")
 
 ###FETCH ALL VARIABLES IN ORDER TO BUILD PROPER INCOME CONCEPTS LATER ON
 
@@ -47,6 +47,10 @@ silc.p_17 <- tbl(pg, 'c17p') %>% filter(pb020=='PL') %>% select(pb010, pb030, pb
 silc.p_14to17 <- bind_rows(silc.p_14, silc.p_15, silc.p_16, silc.p_17)
 
 silc.p <- bind_rows(silc.p, silc.p_14to17)
+silc.p[is.na(silc.p)] <- 0
+
+
+
 
 # replace NAs in working hours by 0
 #silc.p$pl060[is.na(silc.dp$pl060)] <- 0
@@ -78,6 +82,7 @@ silc.p_sum <- silc.p %>% group_by(pb010, px030) %>% summarise_at(vars(py010g, py
 #now we join this with silc.h
 silc.h <- left_join(silc.h, silc.p_sum, by=c('hb010'='pb010', 'hb030'='px030'))
 
+silc.h[is.na(silc.h)] <- 0
 
 ## Personal Register Data
 
@@ -97,6 +102,9 @@ silc.r <- bind_rows(silc.r, silc.r_14to17)
 #get education into the r-file
 educ<-select(silc.p, pe040, pb010, px030, pb030)
 silc.r<-left_join(silc.r, educ, by=c('rb010'='pb010', 'rx030'='px030', 'rb030'='pb030'))
+
+silc.r[is.na(silc.r)] <- 0
+
 
 ###NOW BUILD THE INCOME AGGREGATES
 
@@ -141,8 +149,7 @@ infl$year<-format(infl$time, format="%Y")
 infl<-infl[,5:6]
 
 #shift the index by one year, because the income reported in 2017 was actually earned in 2016 (we thus have to use the 2016-CPI for income in 2017)
-infl<-infl[2:14,]
-ones<-matrix(1,13,1)
+ones<-matrix(1,14,1)
 infl$year<-as.integer(infl$year)
 infl[,2]<-infl[,2]+ones
 
@@ -152,7 +159,7 @@ P1<-merge(silc.rh,infl, by='year')
 P1<-rename(P1, 'CPI'=values)
 
 
-save(P1, file='../data/P1.rda',compress = 'xz')
+save(P1, file='./data/P1.rda',compress = 'xz')
 
 #silc.rhp <- left_join(silc.rh, silc.p, by=c('rb010'='pb010','rx030'='px030' ,'rb030'='pb030'))
 #cancelled because the p-file has less observation than the r-file
@@ -205,4 +212,4 @@ P2<-merge(silc.ph_adults,infl, by='year')
 
 P2<-rename(P2, 'CPI'=values)
 
-save(P2, file='../data/P2.rda',compress = 'xz')
+save(P2, file='./data/P2.rda',compress = 'xz')

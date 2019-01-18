@@ -208,7 +208,7 @@ Interestingly, from 2016 to 2017 pre-tax factor and pre-tax national income rema
 
 Looking at the growth rate of income we can see that the increase in the pre-crisis period was much higher. This seems to be due to the fact that real wage growth between 2004 and 2007 was exceptionally high and unemployment was reaching record lows creating wage pressure. Following the financial crisis wage growth started to fall and began to recover again in 2013 \parencite{lewandowski2018labor, gajewski2015labour}. These differences in income growth along time correspond to differences in Polish GDP growth in the same time (very high before the crisis, less high afterwards), providing a possible explanation for the former (see Figure~\ref{fig:worldbank}).
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jan 18 09:03:14 2019
+% Fri Jan 18 13:55:52 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccc}
@@ -265,7 +265,7 @@ Regarding P2, we see no significant difference in the development of the mean in
 The median income (Table~\ref{median_p1} and Figure~\ref{fig:figure_medianp1}) shows a similar pattern compared to the mean income, which should not be a huge surprise. A big difference is that the median is constantly smaller than the mean income, which is a standard pattern in income and wealth distributions leading to the conclusion that very high incomes skew the income distribution to the right (see also Figure~\ref{fig:figure_density} as an examplary income distribution). Regarding the growth rates the same conclusio as mentioned already before at the mean applies.
 We see that from 2016 to 2017, the median post-tax disposable income increased, while our other income concepts decreased or remained stable. 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jan 18 09:03:30 2019
+% Fri Jan 18 13:56:09 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccc}
@@ -323,7 +323,7 @@ The Gini coefficient measures the area between the actual Lorenz-curve and one w
 In Table~\ref{gini_p1} we have listed the Gini coefficents for all three income concepts over all observed years. We can see a decrease over time for all three concepts, being in line with the findings of \cite{brzezinski2017} and \cite{Muszynska2018}. Table~\ref{gini_p1} also tells us about the redristributional power of the Polish tax and social transfer system: If there was no such redistributional system at all, the income inequality actually experienced by the Polish society would have a Gini of $0.48$ instead of $0.29$ for 2017.
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jan 18 09:03:51 2019
+% Fri Jan 18 13:56:32 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccc}
@@ -371,7 +371,7 @@ The S80/S20 ratio is another method for measuring inequality. It calculates the 
 
 This measure is not entirely unproblematic. During our calculation, we found that the sum of pre-tax factor income of the bottom 20\% for P1 was 0; likewise the pre-tax factor and pre-tax national income for the bottom 20\% in P2. This forced us to exclude all individuals with an income of zero, which denotes a distortion of our data to some extend. Also, all values for P2 of the S80/S20 measure for post-tax income are negative (see Table~\ref{s80_s20p2} and Figure~\ref{fig:figure_s80_s20p2} in the appendix). This can be explained by the fact that the sum of the bottom 20\% is negative in P2, presumably because in this population concept, taxes are being shared among household members but individual individual incomes are not. Of course, this means that the S80/S20 measurements for this income concept are not valid, and the results regarding this measure must generally be handled with care.
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jan 18 09:04:21 2019
+% Fri Jan 18 13:57:05 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccc}
@@ -418,7 +418,7 @@ Now we take a look at the total income share of the top 10\%, as shown in Table~
 
 For P2 we see a similar development for the three income concepts, but higher (because individual income is not being shared with other household members) and the post-tax income share is slightly higher than the pre-tax national income share (probably because of the shared tax burden in all households, which means also those without an individual income pay taxes and are therefore reducing the bottom 90\% share.)
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jan 18 09:04:29 2019
+% Fri Jan 18 13:57:13 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccc}
@@ -463,7 +463,7 @@ As \cite{brzezinski2017} has pointed out, one main reason for wage dispersion is
 The results of our analysis are shown in Table~\ref{ols2005} and Table~\ref{ols2013}. As gender and the education variable are interacted, we have to keep in mind that the intercept stands for the base category $male*pre-primary$, and the values for all other categories build up on this base category. For example, a man with upper secondary education adds the coefficient of $upper secondary$ to the sum of the intercept and his age multiplied with $age$ and $age^2$. A woman with pre-primary education adds $female$ to the sum of intercept and the age-mutliplied age coeffcients, and a woman with tertiary edcuation addtionally adds the $tertiary$-dummy and $female*tertiary$.  
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
-% Date and time: Fr., Jän 18, 2019 - 09:04:34
+% Date and time: Fr., Jän 18, 2019 - 13:57:18
 \begin{table}[H] \centering 
   \caption{Determining factors for all three income aggregates in 2005} 
   \label{ols2005} 
@@ -475,52 +475,52 @@ The results of our analysis are shown in Table~\ref{ols2005} and Table~\ref{ols2
 \\[-1.8ex] & Pre-tax factor & Pre-tax national & Post-tax disposable \\ 
 \\[-1.8ex] & (1) & (2) & (3)\\ 
 \hline \\[-1.8ex] 
- $age$ & 387.573$^{***}$ & 268.232$^{***}$ & 253.166$^{***}$ \\ 
-  & (8.884) & (8.839) & (7.867) \\ 
+ $age$ & 385.727$^{***}$ & 266.928$^{***}$ & 252.746$^{***}$ \\ 
+  & (8.863) & (8.818) & (7.848) \\ 
   & & & \\ 
- $age^2$ & $-$4.293$^{***}$ & $-$2.246$^{***}$ & $-$2.089$^{***}$ \\ 
-  & (0.087) & (0.087) & (0.077) \\ 
+ $age^2$ & $-$4.269$^{***}$ & $-$2.230$^{***}$ & $-$2.085$^{***}$ \\ 
+  & (0.086) & (0.086) & (0.077) \\ 
   & & & \\ 
- $female$ & 431.439$^{***}$ & $-$137.487 & $-$258.360$^{**}$ \\ 
-  & (158.434) & (154.756) & (128.174) \\ 
+ $female$ & 517.053$^{***}$ & $-$53.372 & $-$212.558$^{*}$ \\ 
+  & (151.205) & (145.592) & (119.709) \\ 
   & & & \\ 
- $primary$ & $-$783.690$^{***}$ & $-$19.256 & 80.866 \\ 
-  & (161.200) & (159.087) & (131.132) \\ 
+ $primary$ & $-$637.166$^{***}$ & 100.810 & 109.969 \\ 
+  & (153.134) & (149.566) & (122.746) \\ 
   & & & \\ 
- $lower secondary$ & $-$463.495$^{**}$ & 295.765 & 120.413 \\ 
-  & (211.211) & (211.117) & (270.595) \\ 
+ $lower secondary$ & $-$317.548 & 414.527$^{**}$ & 147.557 \\ 
+  & (203.937) & (203.440) & (266.413) \\ 
   & & & \\ 
- $upper secondary$ & 903.169$^{***}$ & 1,909.551$^{***}$ & 1,596.083$^{***}$ \\ 
-  & (164.178) & (161.337) & (135.121) \\ 
+ $upper secondary$ & 1,056.604$^{***}$ & 2,033.908$^{***}$ & 1,625.556$^{***}$ \\ 
+  & (155.853) & (151.464) & (126.439) \\ 
   & & & \\ 
- $post secondary$ & 2,165.975$^{***}$ & 3,093.466$^{***}$ & 2,202.532$^{***}$ \\ 
-  & (347.639) & (343.926) & (285.981) \\ 
+ $post secondary$ & 2,319.228$^{***}$ & 3,217.650$^{***}$ & 2,231.872$^{***}$ \\ 
+  & (343.911) & (339.512) & (282.076) \\ 
   & & & \\ 
- $tertiary$ & 6,585.590$^{***}$ & 7,828.283$^{***}$ & 6,106.577$^{***}$ \\ 
-  & (387.428) & (380.794) & (330.218) \\ 
+ $tertiary$ & 6,738.451$^{***}$ & 7,952.292$^{***}$ & 6,136.036$^{***}$ \\ 
+  & (384.088) & (376.875) & (326.850) \\ 
   & & & \\ 
- $female \times primary$ & $-$708.317$^{***}$ & $-$552.042$^{***}$ & $-$545.919$^{***}$ \\ 
-  & (169.216) & (166.955) & (139.154) \\ 
+ $female \times primary$ & $-$798.244$^{***}$ & $-$638.855$^{***}$ & $-$591.991$^{***}$ \\ 
+  & (162.260) & (158.299) & (131.249) \\ 
   & & & \\ 
- $female \times lower secondary$ & 81.698 & 410.061 & 562.585 \\ 
-  & (277.232) & (379.418) & (390.025) \\ 
+ $female \times lower secondary$ & $-$12.941 & 320.599 & 516.825 \\ 
+  & (270.964) & (375.101) & (387.152) \\ 
   & & & \\ 
- $female \times upper secondary$ & $-$1,883.600$^{***}$ & $-$1,375.949$^{***}$ & $-$1,278.790$^{***}$ \\ 
-  & (169.327) & (165.899) & (138.382) \\ 
+ $female \times upper secondary$ & $-$1,969.757$^{***}$ & $-$1,460.408$^{***}$ & $-$1,324.633$^{***}$ \\ 
+  & (162.569) & (157.362) & (130.512) \\ 
   & & & \\ 
- $female \times post secondary$ & $-$1,416.692$^{***}$ & $-$641.037 & $-$465.932 \\ 
-  & (396.729) & (390.374) & (330.945) \\ 
+ $female \times post secondary$ & $-$1,501.469$^{***}$ & $-$724.519$^{*}$ & $-$511.456 \\ 
+  & (394.001) & (386.892) & (327.766) \\ 
   & & & \\ 
- $female \times tertriary$ & $-$3,198.260$^{***}$ & $-$2,750.651$^{***}$ & $-$2,448.442$^{***}$ \\ 
-  & (423.878) & (417.352) & (360.582) \\ 
+ $female \times tertriary$ & $-$3,282.438$^{***}$ & $-$2,833.905$^{***}$ & $-$2,494.228$^{***}$ \\ 
+  & (421.222) & (414.036) & (357.605) \\ 
   & & & \\ 
- $intercept$ & $-$5,194.344$^{***}$ & $-$4,534.480$^{***}$ & $-$4,484.626$^{***}$ \\ 
-  & (249.185) & (245.334) & (214.607) \\ 
+ $intercept$ & $-$5,316.890$^{***}$ & $-$4,636.039$^{***}$ & $-$4,505.067$^{***}$ \\ 
+  & (244.083) & (239.205) & (209.428) \\ 
   & & & \\ 
 \hline \\[-1.8ex] 
-Observations & 35,098 & 35,098 & 35,098 \\ 
-Log Likelihood & $-$349,529.500 & $-$349,261.000 & $-$344,502.500 \\ 
-Akaike Inf. Crit. & 699,087.000 & 698,550.000 & 689,033.100 \\ 
+Observations & 35,185 & 35,185 & 35,185 \\ 
+Log Likelihood & $-$350,366.400 & $-$350,094.600 & $-$345,322.200 \\ 
+Akaike Inf. Crit. & 700,760.800 & 700,217.200 & 690,672.400 \\ 
 \hline 
 \hline \\[-1.8ex] 
 \textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
@@ -528,7 +528,7 @@ Akaike Inf. Crit. & 699,087.000 & 698,550.000 & 689,033.100 \\
 \end{table} 
 
 % Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
-% Date and time: Fr., Jän 18, 2019 - 09:04:37
+% Date and time: Fr., Jän 18, 2019 - 13:57:21
 \begin{table}[H] \centering 
   \caption{Determining factors for all three income aggregates in 2013} 
   \label{ols2013} 
@@ -540,52 +540,52 @@ Akaike Inf. Crit. & 699,087.000 & 698,550.000 & 689,033.100 \\
 \\[-1.8ex] & Pre-tax factor & Pre-tax national & Post-tax disposable \\ 
 \\[-1.8ex] & (1) & (2) & (3)\\ 
 \hline \\[-1.8ex] 
- $age$ & 546.463$^{***}$ & 396.613$^{***}$ & 334.482$^{***}$ \\ 
-  & (12.994) & (12.909) & (11.581) \\ 
+ $age$ & 551.236$^{***}$ & 406.707$^{***}$ & 346.168$^{***}$ \\ 
+  & (12.607) & (12.598) & (11.290) \\ 
   & & & \\ 
- $age^2$ & $-$6.060$^{***}$ & $-$3.539$^{***}$ & $-$2.852$^{***}$ \\ 
-  & (0.123) & (0.122) & (0.109) \\ 
+ $age^2$ & $-$6.102$^{***}$ & $-$3.688$^{***}$ & $-$3.007$^{***}$ \\ 
+  & (0.119) & (0.120) & (0.107) \\ 
   & & & \\ 
- $female$ & 696.976$^{*}$ & $-$969.672$^{**}$ & $-$398.259 \\ 
-  & (399.235) & (395.690) & (317.382) \\ 
+ $female$ & $-$1,220.692$^{***}$ & $-$1,952.889$^{***}$ & $-$1,789.743$^{***}$ \\ 
+  & (256.042) & (259.237) & (230.248) \\ 
   & & & \\ 
- $primary$ & $-$1,403.940$^{***}$ & $-$568.978 & $-$269.310 \\ 
-  & (391.835) & (381.854) & (310.329) \\ 
+ $primary$ & $-$2,486.629$^{***}$ & $-$2,608.113$^{***}$ & $-$2,093.060$^{***}$ \\ 
+  & (218.100) & (221.969) & (193.186) \\ 
   & & & \\ 
- $lower secondary$ & $-$1,446.771$^{***}$ & $-$229.453 & $-$186.516 \\ 
-  & (425.703) & (414.691) & (352.380) \\ 
+ $lower secondary$ & $-$2,487.566$^{***}$ & $-$2,380.586$^{***}$ & $-$2,081.720$^{***}$ \\ 
+  & (248.872) & (250.539) & (237.196) \\ 
   & & & \\ 
- $upper secondary$ & 724.137$^{*}$ & 1,969.069$^{***}$ & 1,852.164$^{***}$ \\ 
-  & (391.064) & (378.925) & (307.293) \\ 
+ $upper secondary$ & $-$353.250$^{*}$ & $-$148.848 & $-$36.681 \\ 
+  & (207.381) & (208.300) & (181.394) \\ 
   & & & \\ 
- $post secondary$ & 1,943.506$^{***}$ & 3,223.290$^{***}$ & 2,785.555$^{***}$ \\ 
-  & (531.345) & (526.096) & (428.832) \\ 
+ $post secondary$ & 868.760$^{**}$ & 1,087.941$^{***}$ & 883.207$^{**}$ \\ 
+  & (413.035) & (417.284) & (346.586) \\ 
   & & & \\ 
- $tertiary$ & 6,456.593$^{***}$ & 8,137.335$^{***}$ & 6,715.549$^{***}$ \\ 
-  & (477.537) & (464.223) & (385.781) \\ 
+ $tertiary$ & 5,382.146$^{***}$ & 6,008.829$^{***}$ & 4,819.321$^{***}$ \\ 
+  & (346.458) & (343.374) & (298.398) \\ 
   & & & \\ 
- $female \times primary$ & $-$1,178.116$^{***}$ & $-$559.948 & $-$781.947$^{**}$ \\ 
-  & (415.916) & (412.795) & (333.275) \\ 
+ $female \times primary$ & 739.868$^{***}$ & 463.513 & 644.646$^{**}$ \\ 
+  & (279.525) & (283.279) & (250.431) \\ 
   & & & \\ 
- $female \times lower secondary$ & $-$861.490 & 536.954 & 240.191 \\ 
-  & (555.026) & (551.536) & (493.577) \\ 
+ $female \times lower secondary$ & 1,052.754$^{**}$ & 1,546.396$^{***}$ & 1,652.326$^{***}$ \\ 
+  & (461.496) & (463.859) & (443.002) \\ 
   & & & \\ 
- $female \times upper secondary$ & $-$3,430.541$^{***}$ & $-$2,008.930$^{***}$ & $-$2,339.025$^{***}$ \\ 
-  & (409.966) & (406.652) & (327.649) \\ 
+ $female \times upper secondary$ & $-$1,513.908$^{***}$ & $-$1,015.606$^{***}$ & $-$939.409$^{***}$ \\ 
+  & (272.161) & (275.365) & (243.980) \\ 
   & & & \\ 
- $female \times post secondary$ & $-$2,918.570$^{***}$ & $-$1,218.899$^{**}$ & $-$1,737.282$^{***}$ \\ 
-  & (580.843) & (578.234) & (478.011) \\ 
+ $female \times post secondary$ & $-$1,004.660$^{**}$ & $-$218.507 & $-$333.204 \\ 
+  & (492.890) & (494.481) & (424.708) \\ 
   & & & \\ 
- $female \times tertriary$ & $-$3,976.897$^{***}$ & $-$2,578.248$^{***}$ & $-$2,848.267$^{***}$ \\ 
-  & (519.291) & (513.369) & (425.529) \\ 
+ $female \times tertriary$ & $-$2,057.347$^{***}$ & $-$1,605.731$^{***}$ & $-$1,464.912$^{***}$ \\ 
+  & (419.995) & (417.999) & (365.680) \\ 
   & & & \\ 
- $intercept$ & $-$6,191.714$^{***}$ & $-$5,346.796$^{***}$ & $-$4,916.882$^{***}$ \\ 
-  & (479.654) & (470.332) & (397.790) \\ 
+ $intercept$ & $-$5,236.538$^{***}$ & $-$3,337.944$^{***}$ & $-$3,197.669$^{***}$ \\ 
+  & (320.421) & (320.299) & (288.621) \\ 
   & & & \\ 
 \hline \\[-1.8ex] 
-Observations & 26,512 & 26,512 & 26,512 \\ 
-Log Likelihood & $-$269,563.500 & $-$269,303.900 & $-$265,776.200 \\ 
-Akaike Inf. Crit. & 539,155.100 & 538,635.900 & 531,580.400 \\ 
+Observations & 28,739 & 28,739 & 28,739 \\ 
+Log Likelihood & $-$292,409.000 & $-$292,182.900 & $-$288,381.000 \\ 
+Akaike Inf. Crit. & 584,846.000 & 584,393.900 & 576,790.000 \\ 
 \hline 
 \hline \\[-1.8ex] 
 \textit{Note:}  & \multicolumn{3}{r}{$^{*}$p$<$0.1; $^{**}$p$<$0.05; $^{***}$p$<$0.01} \\ 
@@ -615,7 +615,7 @@ However, the findings presented in this study have to be treated with caution. A
 
 \section{Appendix}
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jan 18 09:04:41 2019
+% Fri Jan 18 13:57:26 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccc}
@@ -656,7 +656,7 @@ However, the findings presented in this study have to be treated with caution. A
 \end{knitrout}
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jan 18 09:04:55 2019
+% Fri Jan 18 13:57:41 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccc}
@@ -697,7 +697,7 @@ However, the findings presented in this study have to be treated with caution. A
 \end{knitrout}
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jan 18 09:05:05 2019
+% Fri Jan 18 13:57:51 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccc}
@@ -738,7 +738,7 @@ However, the findings presented in this study have to be treated with caution. A
 \end{knitrout}
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jan 18 09:05:27 2019
+% Fri Jan 18 13:58:14 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccc}
@@ -779,7 +779,7 @@ However, the findings presented in this study have to be treated with caution. A
 \end{knitrout}
 
 % latex table generated in R 3.5.1 by xtable 1.8-3 package
-% Fri Jan 18 09:05:36 2019
+% Fri Jan 18 13:58:24 2019
 \begin{table}[ht]
 \centering
 \begin{tabular}{lccc}
