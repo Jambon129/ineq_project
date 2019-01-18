@@ -150,7 +150,7 @@ In what follows, we are going to calculate every measurement of income inequalit
 As the outcomes for most of these inequality measures look pretty much the same for both population concepts P1 and P2, we have decided to focus on mostly on the description of the results for P1 and have put the tables and figures for P2 into the appendix. 
 
 \subsection{Mean Income}
-<<get_data, eval=TRUE, cache=FALSE, echo=TRUE, message=FALSE, warning=FALSE>>=
+<<get_data, eval=TRUE, cache=FALSE, echo=FALSE, message=FALSE, warning=FALSE>>=
 library(dplyr)
 library(ggplot2)
 library(survey)
