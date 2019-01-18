@@ -136,8 +136,6 @@ infl <- infl %>% filter(geo == "PL"  &
                           unit == "INX_A_AVG" &
                           time > "2003-01-01")
 
-temp<-as.Date(c("2014-06-01","1993-06-01", "2013-06-03", "1999-01-31"), "%Y-%m-%d")
-
 infl$year<-format(infl$time, format="%Y")
 
 infl<-infl[,5:6]
@@ -208,6 +206,3 @@ P2<-merge(silc.ph_adults,infl, by='year')
 P2<-rename(P2, 'CPI'=values)
 
 save(P2, file='../data/P2.rda',compress = 'xz')
-
-
-
