@@ -15,11 +15,6 @@
 \DeclareNameAlias{author}{last-first}
 \bibliography{mybib}
 
-<<setup, cache=FALSE, echo=FALSE >>=
-library(knitr)
-# global chunk options
-opts_chunk$set(cache=TRUE, autodep=TRUE)
-@
 
 %title stuff
 \title{\huge Income Distribution in Poland \\
