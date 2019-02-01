@@ -15,7 +15,11 @@
 \DeclareNameAlias{author}{last-first}
 \bibliography{mybib}
 
-
+<<setup, cache=FALSE, echo=FALSE >>=
+library(knitr)
+# global chunk options
+opts_chunk$set(cache=TRUE, autodep=TRUE)
+@
 
 %title stuff
 \title{\huge Income Distribution in Poland \\
@@ -392,7 +396,7 @@ The S80/S20 ratio is another method for measuring inequality. It calculates the 
 This measure is not entirely unproblematic. During our calculation, we found that the sum of pre-tax factor income of the bottom 20\% for P1 was 0; likewise the pre-tax factor and pre-tax national income for the bottom 20\% in P2. This forced us to exclude all individuals with an income of zero, which denotes a distortion of our data to some extend. Also, all values for P2 of the S80/S20 measure for post-tax income are negative (see Table~\ref{s80_s20p2} and Figure~\ref{fig:figure_s80_s20p2} in the appendix). This can be explained by the fact that the sum of the bottom 20\% is negative in P2, presumably because in this population concept, taxes are being shared among household members but individual individual incomes are not. Of course, this means that the S80/S20 measurements for this income concept are not valid, and the results regarding this measure must generally be handled with care.
 <<s80_s20p1, echo=FALSE, results='asis', warning=FALSE>>=
 #as with the gini, we have to calculate the s80/s20 several times, because the function only allows for one variable
-s80_s20p1PTFI<-svyby(~PTFI_clean, by=~year, design=subset(P1.svy, PTFI_clean>0), FUN = svyqsr)
+s80_s20p1PTFI<-svyby(~PTFI_clean, by=~year, design=subset(P1.svy, PTFI_clean > 0), FUN = svyqsr)
 s80_s20p1PTNI<-svyby(~PTNI_clean, by=~year, design=P1.svy, FUN = svyqsr)
 s80_s20p1PTDI<-svyby(~PTDI_clean, by=~year, design=P1.svy, FUN = svyqsr)
 
@@ -422,15 +426,17 @@ s80_s20p1<-s80_s20p1[,-6]
 s80_s20p1<-s80_s20p1[,-3]
 s80_s20p1melt<-melt(s80_s20p1, id.vars = 'year')
 
-plot_s80s20p1 <-  ggplot(s80_s20p1melt, aes(x=year, y=value, color=variable))+
-  geom_hline(yintercept=0.0, color = "black", size=0.25)+
-  geom_line(aes(color=variable), size=0.5) +
-  geom_point(aes(color=variable, shape=variable), size=1, show.legend = F) +
-  scale_x_continuous(breaks=s80_s20p1melt$year) +
+plot_s80s20p1 <-  ggplot(s80_s20p1melt, aes(x=year, y=value, color=variable)) +
+  geom_hline(yintercept = 0.0, color = "black", size=0.25) +
+  geom_line(aes(color = variable), size = 0.5) +
+  geom_point(aes(color = variable, shape = variable), size=1, show.legend = F) +
+  scale_x_continuous(breaks = s80_s20p1melt$year) +
   labs(title='S80/S20 ratio for P1', x = "Year", 
        y = "Yearly income in 2015 EUR",
        caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"), labels=c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable'))+theme(legend.position = 'bottom')
+  scale_color_manual(values = c("#00008B", "#0000FF", "#ADD8E6"), 
+                     labels = c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')) +
+  theme(legend.position = 'bottom')
 
 plot_s80s20p1
 @
@@ -440,36 +446,79 @@ Now we take a look at the total income share of the top 10\%, as shown in Table~
 
 For P2 we see a similar development for the three income concepts, but higher (because individual income is not being shared with other household members) and the post-tax income share is slightly higher than the pre-tax national income share (probably because of the shared tax burden in all households, which means also those without an individual income pay taxes and are therefore reducing the bottom 90\% share.)
 <<top10p1, echo=FALSE, results='asis', warning=FALSE>>=
-top10p1total<-svyby(~PTFI_clean+PTNI_clean+PTDI_clean, by=~year, design=P1.svy, FUN=svytotal)
-top10p1total<-rename(top10p1total, 'PTFI_total'='PTFI_clean', 'PTNI_total'='PTNI_clean', 'PTDI_total'='PTDI_clean')
-top10p1totalnoyear<-top10p1total[,2:4]
 
-top10p1upperPTFI<-svyby(~PTFI_clean, by=~year, design = subset(P1.svy, PTFI_clean>=as.numeric(svyquantile(~PTFI_clean, P1.svy, quantile=c(.9)))), FUN=svytotal)
-top10p1upperPTNI<-svyby(~PTNI_clean, by=~year, design = subset(P1.svy, PTNI_clean>=as.numeric(svyquantile(~PTNI_clean, P1.svy, quantile=c(.9)))), FUN=svytotal)
-top10p1upperPTDI<-svyby(~PTDI_clean, by=~year, design = subset(P1.svy, PTDI_clean>=as.numeric(svyquantile(~PTDI_clean, P1.svy, quantile=c(.9)))), FUN=svytotal)
-
-top10p1upperPTNI<-top10p1upperPTNI[,2]
-top10p1upperPTDI<-top10p1upperPTDI[,2]
-
-top10p1upper<-cbind(top10p1upperPTFI, top10p1upperPTNI, top10p1upperPTDI)
-top10p1upper<-rename(top10p1upper, 'PTFI_upper'='PTFI_clean', 'PTNI_upper'='top10p1upperPTNI', 'PTDI_upper'='top10p1upperPTDI')
-top10p1upper<-select(top10p1upper, year, PTFI_upper, PTNI_upper, PTDI_upper)
-top10p1uppernoyear<-top10p1upper[,2:4]
-
-top10p1_share<-top10p1uppernoyear
-top10p1_share[,1]<-top10p1_share[,1]/top10p1totalnoyear[,1]
-top10p1_share[,2]<-top10p1_share[,2]/top10p1totalnoyear[,2]
-top10p1_share[,3]<-top10p1_share[,3]/top10p1totalnoyear[,3]
-
-top10p1year<-top10p1upper
-top10p1year[,2]<-top10p1year[,2]/top10p1totalnoyear[,1]
-top10p1year[,3]<-top10p1year[,3]/top10p1totalnoyear[,2]
-top10p1year[,4]<-top10p1year[,4]/top10p1totalnoyear[,3]
+top_10_percentile_cutoff_P1 <- svyby(~PTFI_clean + PTNI_clean + PTDI_clean, by = ~year, design = P1.svy, FUN = svyquantile, quantile = 0.9, ci = TRUE)
 
 
-names(top10p1_share)<-c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
+#############PTFI
 
-print.xtable(xtable(top10p1_share,align='lccc', caption='The total-income share of the top 10 percent over time for all three income concepts for P1 (EU-SILC 2018, Eurostat 2019).', digits=2, label='top10p1'), booktabs = TRUE)
+
+top10_PTFI_P1 <- merge(P1, top_10_percentile_cutoff_P1, by = "year")
+
+top10_PTFI_P1 <- subset(top10_PTFI_P1, PTFI_clean.x >= PTFI_clean.y)
+
+
+P1_rich_PTFI <- svydesign(ids = ~id_h, weights = ~perswght, data=top10_PTFI_P1) %>% convey_prep()
+
+top_PTFI_P1 <- svyby(~PTFI_clean.x, by = ~year, design = P1_rich_PTFI, FUN = svytotal)
+
+all_PTFI_P1 <- svyby(~PTFI_clean, by = ~year, design = P1.svy, FUN = svytotal)
+
+PTFI_ratio_P1 <- top_PTFI_P1[2] / all_PTFI_P1[2]
+
+
+#############PTNI
+
+
+top10_PTNI_P1 <- merge(P1, top_10_percentile_cutoff_P1, by = "year")
+
+top10_PTNI_P1 <- subset(top10_PTNI_P1, PTNI_clean.x >= PTNI_clean.y)
+
+
+P1_rich_PTNI <- svydesign(ids = ~id_h, weights = ~perswght, data=top10_PTNI_P1) %>% convey_prep()
+
+top_PTNI_P1 <- svyby(~PTNI_clean.x, by = ~year, design = P1_rich_PTFI, FUN = svytotal)
+
+all_PTNI_P1 <- svyby(~PTNI_clean, by = ~year, design = P1.svy, FUN = svytotal)
+
+PTNI_ratio_P1 <- top_PTNI_P1[2] / all_PTNI_P1[2]
+
+
+
+#############PTDI
+
+
+top10_PTDI_P1 <- merge(P1, top_10_percentile_cutoff_P1, by = "year")
+
+top10_PTDI_P1 <- subset(top10_PTDI_P1, PTDI_clean.x >= PTDI_clean.y)
+
+
+P1_rich_PTDI <- svydesign(ids=~id_h, weights=~perswght, data=top10_PTDI_P1) %>% convey_prep()
+
+top_PTDI_P1 <- svyby(~PTDI_clean.x, by = ~year, design = P1_rich_PTDI, FUN = svytotal)
+
+all_PTDI_P1 <- svyby(~PTDI_clean, by = ~year, design = P1.svy, FUN = svytotal)
+
+PTDI_ratio_P1 <- top_PTDI_P1[2] / all_PTDI_P1[2]
+
+
+
+
+top10_P1 <- cbind(PTFI_ratio_P1, PTNI_ratio_P1, PTDI_ratio_P1)
+
+
+colnames(top10_P1)[1:3] <- c("PTFI", "PTNI", "PTDI")
+
+top10_P1
+
+top10p1year <- top10_P1
+
+
+###latex part
+
+names(top10_P1) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
+
+print.xtable(xtable(top10_P1,align='lccc', caption='The total-income share of the top 10 percent over time for all three income concepts for P1 (EU-SILC 2018, Eurostat 2019).', digits=2, label='top10p1'), booktabs = TRUE)
 
 @
 
@@ -691,31 +740,75 @@ plot_s80s20p2
 @
 
 <<top10p2, echo=FALSE, results='asis', warning=FALSE>>=
-top10p2total<-svyby(~PTFI_clean+PTNI_clean+PTDI_clean, by=~year, design=P2.svy, FUN=svytotal)
-top10p2total<-rename(top10p2total, 'PTFI_total'='PTFI_clean', 'PTNI_total'='PTNI_clean', 'PTDI_total'='PTDI_clean')
-top10p2totalnoyear<-top10p2total[,2:4]
+#create cut off
+top_10_percentile_cutoff_P2 <- svyby(~PTFI_clean + PTNI_clean + PTDI_clean, by = ~year, design = P2.svy, FUN = svyquantile, quantile = 0.9, ci = TRUE)
 
-top10p2upperPTFI<-svyby(~PTFI_clean, by=~year, design = subset(P2.svy, PTFI_clean>=as.numeric(svyquantile(~PTFI_clean, P2.svy, quantile=c(.9)))), FUN=svytotal)
-top10p2upperPTNI<-svyby(~PTNI_clean, by=~year, design = subset(P2.svy, PTNI_clean>=as.numeric(svyquantile(~PTNI_clean, P2.svy, quantile=c(.9)))), FUN=svytotal)
-top10p2upperPTDI<-svyby(~PTDI_clean, by=~year, design = subset(P2.svy, PTDI_clean>=as.numeric(svyquantile(~PTDI_clean, P2.svy, quantile=c(.9)))), FUN=svytotal)
 
-top10p2upperPTNI<-top10p2upperPTNI[,2]
-top10p2upperPTDI<-top10p2upperPTDI[,2]
+#############PTFI
 
-top10p2upper<-cbind(top10p2upperPTFI, top10p2upperPTNI, top10p2upperPTDI)
-top10p2upper<-rename(top10p2upper, 'PTFI_upper'='PTFI_clean', 'PTNI_upper'='top10p2upperPTNI', 'PTDI_upper'='top10p2upperPTDI')
-top10p2upper<-select(top10p2upper, year, PTFI_upper, PTNI_upper, PTDI_upper)
-top10p2uppernoyear<-top10p2upper[,2:4]
 
-top10p2_share<-top10p2uppernoyear
-top10p2_share[,1]<-top10p2_share[,1]/top10p2totalnoyear[,1]
-top10p2_share[,2]<-top10p2_share[,2]/top10p2totalnoyear[,2]
-top10p2_share[,3]<-top10p2_share[,3]/top10p2totalnoyear[,3]
+top10_PTFI_P2 <- merge(P2, top_10_percentile_cutoff_P2, by = "year")
 
-top10p2year<-top10p2upper
-top10p2year[,2]<-top10p2year[,2]/top10p2totalnoyear[,1]
-top10p2year[,3]<-top10p2year[,3]/top10p2totalnoyear[,2]
-top10p2year[,4]<-top10p2year[,4]/top10p2totalnoyear[,3]
+top10_PTFI_P2 <- subset(top10_PTFI_P2, PTFI_clean.x >= PTFI_clean.y)
+
+
+P2_rich_PTFI <- svydesign(ids = ~id_h, weights = ~perswght, data=top10_PTFI_P2) %>% convey_prep()
+
+top_PTFI_P2 <- svyby(~PTFI_clean.x, by = ~year, design = P2_rich_PTFI, FUN = svytotal)
+
+all_PTFI_P2 <- svyby(~PTFI_clean, by = ~year, design = P2.svy, FUN = svytotal)
+
+PTFI_ratio_P2 <- top_PTFI_P2[2] / all_PTFI_P2[2]
+
+
+#############PTNI
+
+
+top10_PTNI_P2 <- merge(P2, top_10_percentile_cutoff_P2, by = "year")
+
+top10_PTNI_P2 <- subset(top10_PTNI_P2, PTNI_clean.x >= PTNI_clean.y)
+
+
+P2_rich_PTNI <- svydesign(ids = ~id_h, weights = ~perswght, data=top10_PTNI_P2) %>% convey_prep()
+
+top_PTNI_P2 <- svyby(~PTNI_clean.x, by = ~year, design = P2_rich_PTFI, FUN = svytotal)
+
+all_PTNI_P2 <- svyby(~PTNI_clean, by = ~year, design = P2.svy, FUN = svytotal)
+
+PTNI_ratio_P2 <- top_PTNI_P2[2] / all_PTNI_P2[2]
+
+
+
+#############PTDI
+
+
+top10_PTDI_P2 <- merge(P2, top_10_percentile_cutoff_P2, by = "year")
+
+top10_PTDI_P2 <- subset(top10_PTDI_P2, PTDI_clean.x >= PTDI_clean.y)
+
+
+P2_rich_PTDI <- svydesign(ids=~id_h, weights=~perswght, data=top10_PTDI_P2) %>% convey_prep()
+
+top_PTDI_P2 <- svyby(~PTDI_clean.x, by = ~year, design = P2_rich_PTDI, FUN = svytotal)
+
+all_PTDI_P2 <- svyby(~PTDI_clean, by = ~year, design = P2.svy, FUN = svytotal)
+
+PTDI_ratio_P2 <- top_PTDI_P2[2] / all_PTDI_P2[2]
+
+
+
+
+top10_P2 <- cbind(PTFI_ratio_P2, PTNI_ratio_P2, PTDI_ratio_P2)
+
+
+colnames(top10_P1)[1:3] <- c("PTFI", "PTNI", "PTDI")
+
+top10_P2
+
+top10p2year <- top10_P2
+
+
+#####latex part
 
 names(top10p2_share)<-c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
