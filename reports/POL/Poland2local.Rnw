@@ -444,7 +444,6 @@ For P2 we see a similar development for the three income concepts, but higher (b
 
 top_10_percentile_cutoff_P1 <- svyby(~PTFI_clean + PTNI_clean + PTDI_clean, by = ~year, design = P1.svy, FUN = svyquantile, quantile = 0.9, ci = TRUE)
 
-
 #############PTFI
 
 
@@ -497,16 +496,13 @@ all_PTDI_P1 <- svyby(~PTDI_clean, by = ~year, design = P1.svy, FUN = svytotal)
 PTDI_ratio_P1 <- top_PTDI_P1[2] / all_PTDI_P1[2]
 
 
-
-
 top10_P1 <- cbind(PTFI_ratio_P1, PTNI_ratio_P1, PTDI_ratio_P1)
-
 
 colnames(top10_P1)[1:3] <- c("PTFI", "PTNI", "PTDI")
 
-top10_P1
 
 top10p1year <- top10_P1
+top10p1year$year <- c(2005:2017)
 
 
 ###latex part
@@ -796,18 +792,20 @@ PTDI_ratio_P2 <- top_PTDI_P2[2] / all_PTDI_P2[2]
 top10_P2 <- cbind(PTFI_ratio_P2, PTNI_ratio_P2, PTDI_ratio_P2)
 
 
-colnames(top10_P1)[1:3] <- c("PTFI", "PTNI", "PTDI")
+colnames(top10_P2)[1:3] <- c("PTFI", "PTNI", "PTDI")
 
-top10_P2
 
 top10p2year <- top10_P2
+
+top10p2year$year <- c(2005:2017)
+
 
 
 #####latex part
 
-names(top10p2_share)<-c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
+names(top10_P2)<-c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
-print.xtable(xtable(top10p2_share,align='lccc', caption='The total-income share of the top 10 percent over time for all three income concepts for P2 (EU-SILC 2018, Eurostat 2019).', digits=2, label='top10p2'), booktabs = TRUE)
+print.xtable(xtable(top10_P2,align='lccc', caption='The total-income share of the top 10 percent over time for all three income concepts for P2 (EU-SILC 2018, Eurostat 2019).', digits=2, label='top10p2'), booktabs = TRUE)
 
 @
 
