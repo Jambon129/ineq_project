@@ -203,17 +203,18 @@ print.xtable(xtable(mean_p1noyear,align='lccc', caption='Mean yearly income in 2
 library(reshape2)
 mean_p1<-mean_p1[,1:4]
 meltmean_p1<-melt(mean_p1, id.vars = 'year')
+levels(meltmean_p1$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 plot_meanp1 <- ggplot(meltmean_p1, aes(x=year, y=value, color=variable))+
   geom_hline(yintercept=5000, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
-  geom_point(aes(color=variable, shape=variable), size=1, show.legend = F) +
+  geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=meltmean_p1$year) +
   labs(title='Mean Income for P1',
     x = "Year", 
        y = "Yearly income in 2015 EUR",
-       caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"), labels=c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable'))+theme(legend.position = 'bottom') #+ scale_fill_manual(name="Income Concepts", labels=c("Control", "Treatment 1", "Treatment 2")) #+scale_linetype_manual(name="Title of legend", values = c('mean_p1$pretaxfacinc', 'mean_p1$pretaxnational', 'mean_p1$posttax'), guide = guide_legend(override.aes = list(color = c('blue', 'red','green')))) 
+       caption='EU-SILC 2018, Eurostat 2019') + theme_bw() + 
+  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank()) #+ scale_fill_manual(name="Income Concepts", labels=c("Control", "Treatment 1", "Treatment 2")) #+scale_linetype_manual(name="Title of legend", values = c('mean_p1$pretaxfacinc', 'mean_p1$pretaxnational', 'mean_p1$posttax'), guide = guide_legend(override.aes = list(color = c('blue', 'red','green')))) 
 plot_meanp1
 @
 Regarding P2, we see no significant difference in the development of the mean income variable, expect for a lower level, generally. We ascribe this to the circumstance of P2 being a more individualistic population concept, where taxes are shared equally between household members but salaries and wages are not. (Meaning that even individuals without own income are conceptually being burdened with taxes, pushing the mean income downwards.) 
@@ -230,17 +231,13 @@ if(!require(ggplot2)){
 
 
 indi <- WDI(country = "PL", indicator = "NY.GDP.MKTP.KD.ZG", start = 2005, end = 2017)
-
 colnames(indi)[3] <- "GDPGrowth"
 
 
 plot_gdp <- ggplot(indi, aes(x=year, y=GDPGrowth))+
-  
-  geom_line(aes(y=indi$GDPGrowth), color='dark blue', size=0.5) +
-  
-  scale_x_continuous(breaks=indi$year) +
-  
-  labs(x = "Year", 
+    geom_line(aes(y=indi$GDPGrowth), color='dark blue', size=0.5) +
+    scale_x_continuous(breaks=indi$year) +
+    labs(x = "Year", 
        y = "GDP growth rate",
        caption='World Bank Group')+
   theme_bw()
@@ -261,17 +258,18 @@ Our observations regarding the median of P2 are analogous to those regarding the
 <<figure_medianp1, cache=FALSE, echo=FALSE, fig.cap='Median income in 2015 EUR for the three income concepts over time for P1. The graphs for pre-tax factor income, pre-tax national income and post-tax disposable income are again dark blue, blue and light blue, respectively.', fig.align='center', fig.width=5, fig.height=4>>=
 median_p1<-median_p1[,1:4]
 meltmedian_p1<-melt(median_p1, id.vars = 'year')
+levels(meltmedian_p1$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 
 plot_medianp1 <-  ggplot(meltmedian_p1, aes(x=year, y=value, color=variable))+
   geom_hline(yintercept=5000, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
-  geom_point(aes(color=variable, shape=variable), size=1, show.legend = F) +
+  geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=meltmedian_p1$year) +
   labs(title='Median Income for P1', x = "Year", 
        y = "Yearly income in 2015 EUR",
-       caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"), labels=c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable'))+theme(legend.position = 'bottom')
+       caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
+  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank())
 plot_medianp1
 @
 <<figure_density, cache=FALSE, echo=FALSE, message=FALSE, warning=FALSE, fig.cap='A depiction of of the distribution post-tax disposable income in 2017. As visible, mean and median are very close to each other.', fig.align='center', fig.width=5, fig.height=4>>=
@@ -307,18 +305,13 @@ densframe_p1 <- data.frame(dens=  p1_frame_17$posttax,
 
 
 mean_median17 <- ggplot(densframe_p1, aes (x = dens, y= ..density..)) +
-  
-  geom_density(alpha = .5) +
-  
-  geom_vline(data= plot_17, aes(xintercept=value, colour=variable, linetype=variable), show.legend= T) +
-  
-  geom_text(data= plot_17, aes(label= round(value, digits=0), y=y_pos, x=value, colour = variable), show.legend = F) +
-  
-  labs(title='Distribution of Post-tax Disposable Income of P1, 2017', x = "Yearly Income in 2015 EUR ", 
+    geom_density(alpha = .5) +
+    geom_vline(data= plot_17, aes(xintercept=value, colour=variable, linetype=variable), show.legend= T) +
+    geom_text(data= plot_17, aes(label= round(value, digits=0), y=y_pos, x=value, colour = variable), show.legend = F) +
+    labs(title='Distribution of Post-tax Disposable Income of P1, 2017', x = "Yearly Income in 2015 EUR ", 
        y = "Density",
        caption='EU-SILC 2018, Eurostat 2019')+
-  
-  theme_bw()
+    theme_bw() + theme(legend.title = element_blank())
 
 mean_median17
 
@@ -368,16 +361,17 @@ gini_p1<-gini_p1[,1:6]
 gini_p1<-gini_p1[,-3]
 gini_p1<-gini_p1[,-4]
 meltgini_p1<-melt(gini_p1, id.vars = 'year')
+levels(meltgini_p1$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 plot_ginip1 <-  ggplot(meltgini_p1, aes(x=year, y=value, color=variable))+
   geom_hline(yintercept=0.5, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
-  geom_point(aes(color=variable, shape=variable), size=1, show.legend = F) +
+  geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=meltgini_p1$year) +
   labs(title='Gini Coefficient for P1', x = "Year", 
        y = "Yearly income in 2015 EUR",
-       caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"), labels=c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable'))+theme(legend.position = 'bottom')
+       caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
+  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank())
 
 plot_ginip1
 @
@@ -420,18 +414,18 @@ For P2 (Table~\ref{s80_s20p2} and Figure~\ref{fig:figure_s80_s20p2}) we see a mu
 s80_s20p1<-s80_s20p1[,-6]
 s80_s20p1<-s80_s20p1[,-3]
 s80_s20p1melt<-melt(s80_s20p1, id.vars = 'year')
+levels(s80_s20p1melt$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 plot_s80s20p1 <-  ggplot(s80_s20p1melt, aes(x=year, y=value, color=variable)) +
   geom_hline(yintercept = 0.0, color = "black", size=0.25) +
   geom_line(aes(color = variable), size = 0.5) +
-  geom_point(aes(color = variable, shape = variable), size=1, show.legend = F) +
+  geom_point(aes(color = variable, shape = variable), size=1) +
   scale_x_continuous(breaks = s80_s20p1melt$year) +
   labs(title='S80/S20 ratio for P1', x = "Year", 
        y = "Yearly income in 2015 EUR",
-       caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values = c("#00008B", "#0000FF", "#ADD8E6"), 
-                     labels = c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')) +
-  theme(legend.position = 'bottom')
+       caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
+  scale_color_manual(values = c("#00008B", "#0000FF", "#ADD8E6")) +
+  theme(legend.position = 'bottom', legend.title = element_blank())
 
 plot_s80s20p1
 @
@@ -446,18 +440,13 @@ top_10_percentile_cutoff_P1 <- svyby(~PTFI_clean + PTNI_clean + PTDI_clean, by =
 
 #############PTFI
 
-
 top10_PTFI_P1 <- merge(P1, top_10_percentile_cutoff_P1, by = "year")
-
 top10_PTFI_P1 <- subset(top10_PTFI_P1, PTFI_clean.x >= PTFI_clean.y)
 
 
 P1_rich_PTFI <- svydesign(ids = ~id_h, weights = ~perswght, data=top10_PTFI_P1) %>% convey_prep()
-
 top_PTFI_P1 <- svyby(~PTFI_clean.x, by = ~year, design = P1_rich_PTFI, FUN = svytotal)
-
 all_PTFI_P1 <- svyby(~PTFI_clean, by = ~year, design = P1.svy, FUN = svytotal)
-
 PTFI_ratio_P1 <- top_PTFI_P1[2] / all_PTFI_P1[2]
 
 
@@ -465,16 +454,12 @@ PTFI_ratio_P1 <- top_PTFI_P1[2] / all_PTFI_P1[2]
 
 
 top10_PTNI_P1 <- merge(P1, top_10_percentile_cutoff_P1, by = "year")
-
 top10_PTNI_P1 <- subset(top10_PTNI_P1, PTNI_clean.x >= PTNI_clean.y)
 
 
 P1_rich_PTNI <- svydesign(ids = ~id_h, weights = ~perswght, data=top10_PTNI_P1) %>% convey_prep()
-
 top_PTNI_P1 <- svyby(~PTNI_clean.x, by = ~year, design = P1_rich_PTFI, FUN = svytotal)
-
 all_PTNI_P1 <- svyby(~PTNI_clean, by = ~year, design = P1.svy, FUN = svytotal)
-
 PTNI_ratio_P1 <- top_PTNI_P1[2] / all_PTNI_P1[2]
 
 
@@ -483,23 +468,16 @@ PTNI_ratio_P1 <- top_PTNI_P1[2] / all_PTNI_P1[2]
 
 
 top10_PTDI_P1 <- merge(P1, top_10_percentile_cutoff_P1, by = "year")
-
 top10_PTDI_P1 <- subset(top10_PTDI_P1, PTDI_clean.x >= PTDI_clean.y)
 
-
 P1_rich_PTDI <- svydesign(ids=~id_h, weights=~perswght, data=top10_PTDI_P1) %>% convey_prep()
-
 top_PTDI_P1 <- svyby(~PTDI_clean.x, by = ~year, design = P1_rich_PTDI, FUN = svytotal)
-
 all_PTDI_P1 <- svyby(~PTDI_clean, by = ~year, design = P1.svy, FUN = svytotal)
-
 PTDI_ratio_P1 <- top_PTDI_P1[2] / all_PTDI_P1[2]
 
 
 top10_P1 <- cbind(PTFI_ratio_P1, PTNI_ratio_P1, PTDI_ratio_P1)
-
 colnames(top10_P1)[1:3] <- c("PTFI", "PTNI", "PTDI")
-
 
 top10p1year <- top10_P1
 top10p1year$year <- c(2005:2017)
@@ -515,16 +493,17 @@ print.xtable(xtable(top10_P1,align='lccc', caption='The total-income share of th
 
 <<figure_top10p1, eval=TRUE, echo=FALSE, fig.cap='Depiction of the development of the total income share of the top 10 percent for all three income concepts over time for P1. Pre-tax factor income is dark blue, pre-tax national income is blue and post-tax disposable income is light blue.', fig.align='center', fig.width=5, fig.height=4, fig.pos='H'>>=
 top10p1yearmelt<-melt(top10p1year, id.vars = 'year')
+levels(top10p1yearmelt$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 plot_top10p1 <-  ggplot(top10p1yearmelt, aes(x=year, y=value, color=variable))+
   geom_hline(yintercept=0.25, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
-  geom_point(aes(color=variable, shape=variable), size=1, show.legend = F) +
+  geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=top10p1yearmelt$year) +
   labs(title='Share of the Top 10 Percent for P1', x = "Year", 
        y = "Yearly income in 2015 EUR",
-       caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"), labels=c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable'))+theme(legend.position = 'bottom')
+       caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
+  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank())
 
 
 plot_top10p1
@@ -609,16 +588,17 @@ print.xtable(xtable(mean_p2noyear,align='lccc', caption='Mean yearly income in 2
 <<figure_meanp2, echo=FALSE, fig.cap='Mean income for all three income concepts over time for P2. As in Figure 1, pre-tax factor income is again dark blue, pre-tax national income is blue and post-tax disposable income is light blue.', fig.align='center', fig.width=5, fig.height=4, fig.pos='H'>>=
 mean_p2<-mean_p2[,1:4]
 meltmean_p2<-melt(mean_p2, id.vars = 'year')
+levels(meltmean_p2$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 plot_meanp2 <- ggplot(meltmean_p2, aes(x=year, y=value, color=variable))+
   geom_hline(yintercept=5000, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
-  geom_point(aes(color=variable, shape=variable), size=1, show.legend = F) +
+  geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=meltmean_p2$year) +
   labs(title='Mean Income for P2', x = "Year", 
        y = "Yearly income in 2015 EUR",
-       caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"), labels=c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable'))+theme(legend.position = 'bottom') #+ scale_fill_manual(name="Income Concepts", labels=c("Control", "Treatment 1", "Treatment 2")) #+scale_linetype_manual(name="Title of legend", values = c('mean_p1$pretaxfacinc', 'mean_p1$pretaxnational', 'mean_p1$posttax'), guide = guide_legend(override.aes = list(color = c('blue', 'red','green')))) 
+       caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
+  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank()) #+ scale_fill_manual(name="Income Concepts", labels=c("Control", "Treatment 1", "Treatment 2")) #+scale_linetype_manual(name="Title of legend", values = c('mean_p1$pretaxfacinc', 'mean_p1$pretaxnational', 'mean_p1$posttax'), guide = guide_legend(override.aes = list(color = c('blue', 'red','green')))) 
 plot_meanp2
 @
 
@@ -632,17 +612,18 @@ print.xtable(xtable(median_p2noyear,align='lccc', caption='Median yearly income 
 <<figure_medianp2, echo=FALSE, fig.cap='Median income in 2015 EUR for the three income concepts over time for P2. Pre-tax factor income is again dark blue, pre-tax national income is blue and post-tax disposable income is again light blue.', fig.align='center', fig.width=5, fig.height=4, fig.pos='H'>>=
 median_p2<-median_p2[,1:4]
 meltmedian_p2<-melt(median_p2, id.vars = 'year')
+levels(meltmedian_p2$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 
 plot_medianp2 <-  ggplot(meltmedian_p2, aes(x=year, y=value, color=variable))+
   geom_hline(yintercept=5000, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
-  geom_point(aes(color=variable, shape=variable), size=1, show.legend = F) +
+  geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=meltmedian_p2$year) +
   labs(title='Median Income for P2', x = "Year", 
        y = "Yearly income in 2015 EUR",
-       caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"), labels=c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable'))+theme(legend.position = 'bottom')
+       caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
+  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank())
 plot_medianp2
 @
 
@@ -673,16 +654,17 @@ gini_p2<-gini_p2[,1:6]
 gini_p2<-gini_p2[,-3]
 gini_p2<-gini_p2[,-4]
 meltgini_p2<-melt(gini_p2, id.vars = 'year')
+levels(meltgini_p2$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 plot_ginip2 <-  ggplot(meltgini_p2, aes(x=year, y=value, color=variable))+
   geom_hline(yintercept=0.5, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
-  geom_point(aes(color=variable, shape=variable), size=1, show.legend = F) +
+  geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=meltgini_p2$year) +
   labs(title='Gini Coefficient for P2', x = "Year", 
        y = "Yearly income in 2015 EUR",
-       caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"), labels=c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable'))+theme(legend.position = 'bottom')
+       caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
+  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank())
 
 
 plot_ginip2
@@ -717,16 +699,17 @@ print.xtable(xtable(s80_s20p2noyear,align='lccc', caption='S80/S20 ratios over t
 s80_s20p2<-s80_s20p2[,-6]
 s80_s20p2<-s80_s20p2[,-3]
 s80_s20p2melt<-melt(s80_s20p2, id.vars = 'year')
+levels(s80_s20p2melt$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 plot_s80s20p2 <-  ggplot(s80_s20p2melt, aes(x=year, y=value, color=variable))+
   geom_hline(yintercept=0.0, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
-  geom_point(aes(color=variable, shape=variable), size=1, show.legend = F) +
+  geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=s80_s20p2melt$year) +
   labs(title='S80/S20 ratio for P2', x = "Year", 
        y = "Yearly income in 2015 EUR",
-       caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"), labels=c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable'))+theme(legend.position = 'bottom')
+       caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
+  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank())
 plot_s80s20p2
 @
 
@@ -739,72 +722,45 @@ top_10_percentile_cutoff_P2 <- svyby(~PTFI_clean + PTNI_clean + PTDI_clean, by =
 
 
 top10_PTFI_P2 <- merge(P2, top_10_percentile_cutoff_P2, by = "year")
-
 top10_PTFI_P2 <- subset(top10_PTFI_P2, PTFI_clean.x >= PTFI_clean.y)
 
-
 P2_rich_PTFI <- svydesign(ids = ~id_h, weights = ~perswght, data=top10_PTFI_P2) %>% convey_prep()
-
 top_PTFI_P2 <- svyby(~PTFI_clean.x, by = ~year, design = P2_rich_PTFI, FUN = svytotal)
-
 all_PTFI_P2 <- svyby(~PTFI_clean, by = ~year, design = P2.svy, FUN = svytotal)
-
 PTFI_ratio_P2 <- top_PTFI_P2[2] / all_PTFI_P2[2]
 
 
 #############PTNI
 
-
 top10_PTNI_P2 <- merge(P2, top_10_percentile_cutoff_P2, by = "year")
-
 top10_PTNI_P2 <- subset(top10_PTNI_P2, PTNI_clean.x >= PTNI_clean.y)
 
-
 P2_rich_PTNI <- svydesign(ids = ~id_h, weights = ~perswght, data=top10_PTNI_P2) %>% convey_prep()
-
 top_PTNI_P2 <- svyby(~PTNI_clean.x, by = ~year, design = P2_rich_PTFI, FUN = svytotal)
-
 all_PTNI_P2 <- svyby(~PTNI_clean, by = ~year, design = P2.svy, FUN = svytotal)
-
 PTNI_ratio_P2 <- top_PTNI_P2[2] / all_PTNI_P2[2]
-
-
 
 #############PTDI
 
 
 top10_PTDI_P2 <- merge(P2, top_10_percentile_cutoff_P2, by = "year")
-
 top10_PTDI_P2 <- subset(top10_PTDI_P2, PTDI_clean.x >= PTDI_clean.y)
 
 
 P2_rich_PTDI <- svydesign(ids=~id_h, weights=~perswght, data=top10_PTDI_P2) %>% convey_prep()
-
 top_PTDI_P2 <- svyby(~PTDI_clean.x, by = ~year, design = P2_rich_PTDI, FUN = svytotal)
-
 all_PTDI_P2 <- svyby(~PTDI_clean, by = ~year, design = P2.svy, FUN = svytotal)
-
 PTDI_ratio_P2 <- top_PTDI_P2[2] / all_PTDI_P2[2]
 
-
-
-
 top10_P2 <- cbind(PTFI_ratio_P2, PTNI_ratio_P2, PTDI_ratio_P2)
-
-
 colnames(top10_P2)[1:3] <- c("PTFI", "PTNI", "PTDI")
 
-
 top10p2year <- top10_P2
-
 top10p2year$year <- c(2005:2017)
-
-
 
 #####latex part
 
 names(top10_P2)<-c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
-
 print.xtable(xtable(top10_P2,align='lccc', caption='The total-income share of the top 10 percent over time for all three income concepts for P2 (EU-SILC 2018, Eurostat 2019).', digits=2, label='top10p2'), booktabs = TRUE)
 
 @
@@ -812,16 +768,17 @@ print.xtable(xtable(top10_P2,align='lccc', caption='The total-income share of th
 
 <<figure_top10p2, eval=TRUE, echo=FALSE, fig.cap='Depiction of the development of the total income share of the top 10 percent for all three income concepts over time for P2. Pre-tax factor income is dark blue, pre-tax national income is blue and post-tax disposable income is light blue.', fig.align='center', fig.width=5, fig.height=4, fig.pos='H'>>=
 top10p2yearmelt<-melt(top10p2year, id.vars = 'year')
+levels(top10p2yearmelt$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 plot_top10p2 <-  ggplot(top10p2yearmelt, aes(x=year, y=value, color=variable))+
   geom_hline(yintercept=0.25, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
-  geom_point(aes(color=variable, shape=variable), size=1, show.legend = F) +
+  geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=top10p2yearmelt$year) +
   labs(title='Share of the Top 10 Percent for P2', x = "Year", 
        y = "Yearly income in 2015 EUR",
-       caption='EU-SILC 2018, Eurostat 2019', color='')+theme_bw() + 
-  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"), labels=c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable'))+theme(legend.position = 'bottom') 
+       caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
+  scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank()) 
 plot_top10p2
 @
 
