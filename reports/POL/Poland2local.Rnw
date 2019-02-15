@@ -422,7 +422,7 @@ plot_s80s20p1 <-  ggplot(s80_s20p1melt, aes(x=year, y=value, color=variable)) +
   geom_point(aes(color = variable, shape = variable), size=1) +
   scale_x_continuous(breaks = s80_s20p1melt$year) +
   labs(title='S80/S20 ratio for P1', x = "Year", 
-       y = "Yearly income in 2015 EUR",
+       y = "S80/20 in %",
        caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
   scale_color_manual(values = c("#00008B", "#0000FF", "#ADD8E6")) +
   theme(legend.position = 'bottom', legend.title = element_blank())
@@ -478,6 +478,8 @@ PTDI_ratio_P1 <- top_PTDI_P1[2] / all_PTDI_P1[2]
 
 top10_P1 <- cbind(PTFI_ratio_P1, PTNI_ratio_P1, PTDI_ratio_P1)
 colnames(top10_P1)[1:3] <- c("PTFI", "PTNI", "PTDI")
+top10_P1[1:3] <- top10_P1[1:3]*100
+
 
 top10p1year <- top10_P1
 top10p1year$year <- c(2005:2017)
@@ -496,15 +498,14 @@ top10p1yearmelt<-melt(top10p1year, id.vars = 'year')
 levels(top10p1yearmelt$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 plot_top10p1 <-  ggplot(top10p1yearmelt, aes(x=year, y=value, color=variable))+
-  geom_hline(yintercept=0.25, color = "black", size=0.25)+
+  geom_hline(yintercept=20, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
   geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=top10p1yearmelt$year) +
-  labs(title='Share of the Top 10 Percent for P1', x = "Year", 
-       y = "Yearly income in 2015 EUR",
+  labs(title='Share of the top 10 percent for P1', x = "Year", 
+       y = "Share of the top 10 in %",
        caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
   scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank())
-
 
 plot_top10p1
 @
@@ -715,7 +716,7 @@ plot_s80s20p2 <-  ggplot(s80_s20p2melt, aes(x=year, y=value, color=variable))+
   geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=s80_s20p2melt$year) +
   labs(title='S80/S20 ratio for P2', x = "Year", 
-       y = "Yearly income in 2015 EUR",
+       y = "S80/20 in %",
        caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
   scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank())
 plot_s80s20p2
@@ -762,6 +763,8 @@ PTDI_ratio_P2 <- top_PTDI_P2[2] / all_PTDI_P2[2]
 
 top10_P2 <- cbind(PTFI_ratio_P2, PTNI_ratio_P2, PTDI_ratio_P2)
 colnames(top10_P2)[1:3] <- c("PTFI", "PTNI", "PTDI")
+top10_P2[1:3] <- top10_P2[1:3]*100
+
 
 top10p2year <- top10_P2
 top10p2year$year <- c(2005:2017)
@@ -779,12 +782,12 @@ top10p2yearmelt<-melt(top10p2year, id.vars = 'year')
 levels(top10p2yearmelt$variable) <- c('Pre-tax factor', 'Pre-tax national', 'Post-tax disposable')
 
 plot_top10p2 <-  ggplot(top10p2yearmelt, aes(x=year, y=value, color=variable))+
-  geom_hline(yintercept=0.25, color = "black", size=0.25)+
+  geom_hline(yintercept=30, color = "black", size=0.25)+
   geom_line(aes(color=variable), size=0.5) +
   geom_point(aes(color=variable, shape=variable), size=1) +
   scale_x_continuous(breaks=top10p2yearmelt$year) +
-  labs(title='Share of the Top 10 Percent for P2', x = "Year", 
-       y = "Yearly income in 2015 EUR",
+  labs(title='Share of the top 10 percent for P2', x = "Year", 
+       y = "Share of the top 10 in %",
        caption='EU-SILC 2018, Eurostat 2019')+theme_bw() + 
   scale_color_manual(values=c("#00008B", "#0000FF", "#ADD8E6"))+theme(legend.position = 'bottom', legend.title = element_blank()) 
 plot_top10p2
